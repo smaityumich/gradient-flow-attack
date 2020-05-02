@@ -76,5 +76,7 @@ with mp.Pool(cpus) as pool:
     perturbed_samples = pool.map(sample_perturbation, zip(x_unprotected_train[:100], y_train[:100]))
 end_time = time.time()
 
+print(f'CPU count {cpus}\n')
 print(f'Time taken {(end_time - start_time)/100}\n')
 print(f'Total time taken {end_time-start_time}')
+
