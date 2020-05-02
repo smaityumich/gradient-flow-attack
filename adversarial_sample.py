@@ -29,11 +29,15 @@ def projection_matrix(sensetive_directions):
     mx = np.identity(d)
     for vector in sensetive_directions:
         vector = vector/np.linalg.norm(vector, ord=2)
-        vector = vector.reshape((-1, 1))
+        vector = vector.reshape((-1,1))
         mx = mx - 0.99* vector @ vector.T
+    return mx
+
+
 
 
 unprotected_directions = projection_matrix(sensetive_directions)
+print(unprotected_directions)
 
 
 
@@ -43,7 +47,7 @@ x_unprotected_train, x_unprotected_test = tf.cast(x_unprotected_train, dtype = t
 y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 
 graph = utils.ClassifierGraph(50, 2)
-graph = cl.Classifier(graph, x_unprotected_train, y_train, x_unprotected_test, y_test)
+graph = cl.Classifier(graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps=1000)
 
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
