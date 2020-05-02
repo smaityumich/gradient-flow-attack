@@ -73,7 +73,7 @@ def perturbed_loss(x, y, regularizer = 1e-2, learning_rate = 1e-4, num_steps = 2
 
 start_time = time.time()
 for x, y in zip(x_unprotected_train[:100], y_train[:100]):
-    sample_perturbation(x, y)
+    perturbed_loss(x, y)
 end_time = time.time()
 
 print(f'Time taken {(end_time - start_time)/100}\n')
