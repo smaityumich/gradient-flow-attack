@@ -71,7 +71,6 @@ def perturbed_loss(x, y, regularizer = 1e-2, learning_rate = 1e-4, num_steps = 2
     return utils.EntropyLoss(y, graph(x_perturbed))
 
 cpus = mp.cpu_count()
-start_time = time.time()
 with mp.Pool(cpus) as pool:
     perturbed_samples = pool.map(sample_perturbation, zip(x_unprotected_train[:100], y_train[:100]))
 end_time = time.time()
