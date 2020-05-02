@@ -6,13 +6,12 @@ class ClassifierGraph(keras.Model):
 
     def __init__(self, n_hidden1, num_classes):
         super(ClassifierGraph, self).__init__()
-        self.layer1 = keras.layers.Dense(n_hidden1, activation = tf.nn.relu)
-        self.out = keras.layers.Dense(num_classes, activation = tf.nn.softmax)
+        self.layer1 = keras.layers.Dense(n_hidden1, activation = tf.nn.relu, name = 'layer-1')
+        self.out = keras.layers.Dense(num_classes, activation = tf.nn.softmax, name = 'output')
 
     def call(self, x, predict = False):
         x = self.layer1(x)
         x = self.out(x)
-        x = tf.nn.softmax(x)
         return tf.cast(tf.argmax(x, axis = 1), dtype = tf.float32) if predict else x
 
 

@@ -46,8 +46,8 @@ y_train, y_test = y_train.astype('int32'), y_test.astype('int32')
 x_unprotected_train, x_unprotected_test = tf.cast(x_unprotected_train, dtype = tf.float32), tf.cast(x_unprotected_test, dtype = tf.float32)
 y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 
-graph = utils.ClassifierGraph(50, 2)
-graph = cl.Classifier(graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 1000)
+init_graph = utils.ClassifierGraph(50, 2)
+graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 1000)
 
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
@@ -65,7 +65,7 @@ def sample_perturbation(data_point, regularizer = 1e-2, learning_rate = 1e-4, nu
 
         gradient = g.gradient(loss, x)
         x = x + learning_rate * gradient / tf.linalg.norm(gradient, ord = 2)
-    return x
+    return x.numpy()
 
 def perturbed_loss(x, y, regularizer = 1e-2, learning_rate = 1e-4, num_steps = 20):
     x_perturbed = sample_perturbation(x, y, regularizer, learning_rate, num_steps)
@@ -76,8 +76,19 @@ start_time = time.time()
 with mp.Pool(cpus) as pool:
     perturbed_samples = pool.map(sample_perturbation, zip(x_unprotected_train[:100], y_train[:100]))
 end_time = time.time()
+perturbed_samples = np.array(perturbed_samples)
 
 print(f'CPU count {cpus}\n')
 print(f'Time taken {(end_time - start_time)/100}\n')
 print(f'Total time taken {end_time-start_time}')
 
+
+filename = 'adversarial-points/points1.npy'
+imagename = 'adversarial-points/graph1.png'
+
+np.save(perturbed_samples, filename)
+
+input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
+output = graph.call(input)
+model = tf.keras.Model(inputs=input, outputs=output)
+tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
