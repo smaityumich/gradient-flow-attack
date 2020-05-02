@@ -40,14 +40,13 @@ unprotected_directions = projection_matrix(sensetive_directions)
 print(unprotected_directions)
 
 
-
 # Casing to tensor 
 y_train, y_test = y_train.astype('int32'), y_test.astype('int32')
 x_unprotected_train, x_unprotected_test = tf.cast(x_unprotected_train, dtype = tf.float32), tf.cast(x_unprotected_test, dtype = tf.float32)
 y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 
 graph = utils.ClassifierGraph(50, 2)
-graph = cl.Classifier(graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps=1000)
+graph = cl.Classifier(graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 1000)
 
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
