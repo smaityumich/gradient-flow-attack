@@ -50,8 +50,8 @@ graph = cl.Classifier(graph, x_unprotected_train, y_train, x_unprotected_test, y
 
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
-def sample_perturbation(x, y, regularizer = 1e-2, learning_rate = 1e-4, num_steps = 20):
-    
+def sample_perturbation(data_point, regularizer = 1e-2, learning_rate = 1e-4, num_steps = 20):
+    x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
     x_start = x
