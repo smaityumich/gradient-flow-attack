@@ -38,7 +38,7 @@ def projection_matrix(sensetive_directions):
 
 
 unprotected_directions = projection_matrix(sensetive_directions)
-print(unprotected_directions)
+
 
 
 # Casing to tensor 
@@ -74,16 +74,13 @@ def perturbed_loss(x, y, regularizer = 1e-2, learning_rate = 1e-4, num_steps = 2
 cpus = mp.cpu_count()
 start_time = time.time()
 with mp.Pool(cpus) as pool:
-    perturbed_samples = pool.map(sample_perturbation, zip(x_unprotected_train[:100], y_train[:100]))
+    perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
 end_time = time.time()
 perturbed_samples = np.array(perturbed_samples)
 
-print(f'CPU count {cpus}\n')
-print(f'Time taken {(end_time - start_time)/100}\n')
-print(f'Total time taken {end_time-start_time}')
 
 
-filename = 'adversarial-points/points1.npy'
+filename = 'adversarial-points/perturbed_test_points1.npy'
 imagename = 'adversarial-points/graph1.png'
 
 np.save(filename, perturbed_samples)
