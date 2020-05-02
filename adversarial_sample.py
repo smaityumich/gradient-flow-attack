@@ -86,7 +86,7 @@ print(f'Total time taken {end_time-start_time}')
 filename = 'adversarial-points/points1.npy'
 imagename = 'adversarial-points/graph1.png'
 
-np.save(perturbed_samples, filename)
+np.save(filename, perturbed_samples)
 
 input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
 output = graph.call(input)
