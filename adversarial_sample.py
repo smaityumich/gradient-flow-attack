@@ -6,6 +6,7 @@ import classifier as cl
 import utils
 import time
 import multiprocessing as mp
+import dill
 
 seed = 1
 dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
