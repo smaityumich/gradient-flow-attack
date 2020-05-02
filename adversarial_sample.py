@@ -76,14 +76,14 @@ start_time = time.time()
 with mp.Pool(cpus) as pool:
     perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
 end_time = time.time()
-perturbed_samples = np.array(perturbed_samples)
+perturbed_test_samples = np.array(perturbed_test_samples)
 
 
 
 filename = 'adversarial-points/perturbed_test_points1.npy'
 imagename = 'adversarial-points/graph1.png'
 
-np.save(filename, perturbed_samples)
+np.save(filename, perturbed_test_samples)
 
 input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
 output = graph.call(input)
