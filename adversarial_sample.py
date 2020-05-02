@@ -76,4 +76,5 @@ for x, y in zip(x_unprotected_train[:100], y_train[:100]):
     sample_perturbation(x, y)
 end_time = time.time()
 
-print(f'Time taken {(end_time - start_time)/100}')
+print(f'Time taken {(end_time - start_time)/100}\n')
+print(f'Total time taken {end_time-start_time}')
