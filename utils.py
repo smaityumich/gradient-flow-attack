@@ -9,12 +9,11 @@ class ClassifierGraph(keras.Model):
         self.layer1 = keras.layers.Dense(n_hidden1, activation = tf.nn.relu)
         self.out = keras.layers.Dense(num_classes, activation = tf.nn.softmax)
 
-    def call(self, x, training = False):
+    def call(self, x, predict = False):
         x = self.layer1(x)
         x = self.out(x)
-        if training:
-            x = tf.nn.softmax(x)
-        return x
+        x = tf.nn.softmax(x)
+        return tf.cast(tf.argmax(x, axis = 1), dtype = tf.float32) if predict else x
 
 
 def EntropyLoss(y, prob):
