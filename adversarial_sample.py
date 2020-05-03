@@ -7,6 +7,9 @@ import utils
 import time
 import multiprocessing as mp
 import dill
+import random
+import matplotlib.pyplot as plt
+import scipy
 
 seed = 1
 dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
@@ -82,6 +85,8 @@ perturbed_test_samples = np.array(perturbed_test_samples)
 
 filename = 'adversarial-points/perturbed_test_points1.npy'
 imagename = 'adversarial-points/graph1.png'
+histplot = 'adversarial-points/perturbed-mean-entropy-hist1.png'
+qqplot = 'adversarial-points/perturbed-mean-entropy-qqplot1.png'
 
 np.save(filename, perturbed_test_samples)
 
@@ -96,19 +101,19 @@ def error(data):
     x = tf.cast(x, dtype = tf.float32)
     return utils.EntropyLoss(y, graph(x))
 
-purterbed_error = [error(data) for data in zip(perturbed_test_samples, y_test)]
-purterbed_error = [x.numpy() for x in purterbed_error]
+perturbed_error = [error(data) for data in zip(perturbed_test_samples, y_test)]
+perturbed_error = [x.numpy() for x in perturbed_error]
 
-import random
-def purterb_mean(n = 9045):
+
+def perturb_mean(n = 9045):
     index = random.sample(range(n), 400)
-    perturb_errors = [purterbed_error[i] for i in index]
-    return np.mean(perturb_errors)
+    srswr_perturb_errors =[perturbed_error[i] for i in index]
+    return np.mean(srswr_perturb_errors)
 
-perturbed_means = [purterb_mean() for _ in range(10000)]
-import matplotlib.pyplot as plt
+perturbed_means = [perturb_mean() for _ in range(5000)]
 plt.hist(perturbed_means)
-plt.show()
+plt.savefig(histplot)
 
-import scipy
+
 scipy.stats.probplot(perturbed_means, plot=plt)
+plt.savefig(qqplot)
