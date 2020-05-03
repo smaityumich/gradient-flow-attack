@@ -7,6 +7,10 @@ import utils
 import time
 import multiprocessing as mp
 import dill
+import random
+import matplotlib.pyplot as plt
+import scipy
+plt.ioff()
 
 
 seed = 1
@@ -27,7 +31,7 @@ protected_regression.fit(x_unprotected_train, x_protected_train)
 sensetive_directions = protected_regression.coef_
 
 def projection_matrix(sensetive_directions):
-    n, d = sensetive_directions.shape
+    _, d = sensetive_directions.shape
     mx = np.identity(d)
     for vector in sensetive_directions:
         vector = vector/np.linalg.norm(vector, ord=2)
@@ -51,14 +55,14 @@ unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 init_graph = utils.ClassifierGraph(50, 2)
 #graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 1000) # use for unfair algo
 graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
-                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 1000) # for fair algo
+                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
 
 def sample_perturbation(data_point, regularizer = 1e-2, learning_rate = 1e-4, num_steps = 20):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
-    x = np.matmul(x, unprotected_directions) # Remove if not trying to make algo fair
+    x = tf.matmul(x, unprotected_directions) # Remove if not trying to make algo fair
     y = tf.reshape(y, (1, -1))
     x_start = x
     for _ in range(num_steps):
@@ -73,13 +77,13 @@ def sample_perturbation(data_point, regularizer = 1e-2, learning_rate = 1e-4, nu
     return x.numpy()
 
 def perturbed_loss(x, y, regularizer = 1e-2, learning_rate = 1e-4, num_steps = 20):
-    x_perturbed = sample_perturbation(x, y, regularizer, learning_rate, num_steps)
+    x_perturbed = sample_perturbation((x, y), regularizer, learning_rate, num_steps)
     return utils.EntropyLoss(y, graph(x_perturbed))
 
 cpus = mp.cpu_count()
 start_time = time.time()
 with mp.Pool(cpus) as pool:
-    perturbed_test_samples = pool.map(sample_perturbation, zip(tf.matmul(x_unprotected_test, unprotected_directions), y_test))
+    perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
 end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)
 

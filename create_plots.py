@@ -30,7 +30,7 @@ protected_regression.fit(x_unprotected_train, x_protected_train)
 sensetive_directions = protected_regression.coef_
 
 def projection_matrix(sensetive_directions):
-    n, d = sensetive_directions.shape
+    _, d = sensetive_directions.shape
     mx = np.identity(d)
     for vector in sensetive_directions:
         vector = vector/np.linalg.norm(vector, ord=2)
