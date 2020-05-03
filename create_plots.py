@@ -83,8 +83,8 @@ def perturb_mean(n = 9045):
 
 perturbed_means = [perturb_mean() for _ in range(5000)]
 plt.hist(perturbed_means)
-plt.savefig(histplot)
 plt.title(f'Histogram of mean loss of perturbed samples for expt {expt}')
+plt.savefig(histplot)
 plt.close()
 
 

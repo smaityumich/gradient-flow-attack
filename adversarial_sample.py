@@ -7,10 +7,7 @@ import utils
 import time
 import multiprocessing as mp
 import dill
-import random
-import matplotlib.pyplot as plt
-import scipy
-plt.ioff()
+
 
 seed = 1
 dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
@@ -51,13 +48,16 @@ x_unprotected_train, x_unprotected_test = tf.cast(x_unprotected_train, dtype = t
 y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 
 init_graph = utils.ClassifierGraph(50, 2)
-graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 1000)
+#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 1000) # use for unfair algo
+graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
+                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 1000) # for fair algo
 
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
 def sample_perturbation(data_point, regularizer = 1e-2, learning_rate = 1e-4, num_steps = 20):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
+    x = np.matmul(x, unprotected_directions) # Remove if not trying to make algo fair
     y = tf.reshape(y, (1, -1))
     x_start = x
     for _ in range(num_steps):
@@ -83,11 +83,9 @@ end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)
 
 
-
-filename = 'adversarial-points/perturbed_test_points1.npy'
-imagename = 'adversarial-points/graph1.png'
-histplot = 'adversarial-points/perturbed-mean-entropy-hist1.png'
-qqplot = 'adversarial-points/perturbed-mean-entropy-qqplot1.png'
+expt = 1
+filename = f'adversarial-points/perturbed_test_points{expt}.npy'
+imagename = f'adversarial-points/graph{expt}.png'
 
 
 np.save(filename, perturbed_test_samples)
@@ -96,39 +94,5 @@ input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
 output = graph.call(input)
 model = tf.keras.Model(inputs=input, outputs=output)
 tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
-
-
-expt = 1
-filename = f'adversarial-points/perturbed_test_points{expt}.npy'
-histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
-qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'
-
-
-
-
-def error(data):
-    x, y = data
-    x = tf.cast(x, dtype = tf.float32)
-    return utils.EntropyLoss(y, graph(x))
-
-perturbed_error = [error(data) for data in zip(perturbed_test_samples, y_test)]
-perturbed_error = [x.numpy() for x in perturbed_error]
-
-
-def perturb_mean(n = 9045):
-    index = random.sample(range(n), 400)
-    srswr_perturb_errors =[perturbed_error[i] for i in index]
-    return np.mean(srswr_perturb_errors)
-
-perturbed_means = [perturb_mean() for _ in range(5000)]
-plt.hist(perturbed_means)
-plt.savefig(histplot)
-plt.title(f'Histogram of mean loss of perturbed samples for expt {expt}')
-plt.close()
-
-
-scipy.stats.probplot(perturbed_means, plot=plt)
-plt.title(f'Normal qq-plot of mean loss of perturbed samples for expt {expt}')
-plt.savefig(qqplot)
 
 
