@@ -79,7 +79,7 @@ def perturbed_loss(x, y, regularizer = 1e-2, learning_rate = 1e-4, num_steps = 2
 cpus = mp.cpu_count()
 start_time = time.time()
 with mp.Pool(cpus) as pool:
-    perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
+    perturbed_test_samples = pool.map(sample_perturbation, zip(tf.matmul(x_unprotected_test, unprotected_directions), y_test))
 end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)
 
