@@ -7,6 +7,10 @@ import utils
 import time
 import multiprocessing as mp
 import dill
+import random
+import matplotlib.pyplot as plt
+import scipy
+plt.ioff()
 
 seed = 1
 dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
@@ -92,4 +96,39 @@ input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
 output = graph.call(input)
 model = tf.keras.Model(inputs=input, outputs=output)
 tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
+
+
+expt = 1
+filename = f'adversarial-points/perturbed_test_points{expt}.npy'
+histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
+qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'
+
+
+
+
+def error(data):
+    x, y = data
+    x = tf.cast(x, dtype = tf.float32)
+    return utils.EntropyLoss(y, graph(x))
+
+perturbed_error = [error(data) for data in zip(perturbed_test_samples, y_test)]
+perturbed_error = [x.numpy() for x in perturbed_error]
+
+
+def perturb_mean(n = 9045):
+    index = random.sample(range(n), 400)
+    srswr_perturb_errors =[perturbed_error[i] for i in index]
+    return np.mean(srswr_perturb_errors)
+
+perturbed_means = [perturb_mean() for _ in range(5000)]
+plt.hist(perturbed_means)
+plt.savefig(histplot)
+plt.title(f'Histogram of mean loss of perturbed samples for expt {expt}')
+plt.close()
+
+
+scipy.stats.probplot(perturbed_means, plot=plt)
+plt.title(f'Normal qq-plot of mean loss of perturbed samples for expt {expt}')
+plt.savefig(qqplot)
+
 

@@ -10,6 +10,7 @@ import dill
 import random
 import matplotlib.pyplot as plt
 import scipy
+plt.ioff()
 
 seed = 1
 dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
@@ -57,10 +58,10 @@ unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
 
 
-
-filename = 'adversarial-points/perturbed_test_points1.npy'
-histplot = 'adversarial-points/perturbed-mean-entropy-hist1.png'
-qqplot = 'adversarial-points/perturbed-mean-entropy-qqplot1.png'
+expt = 1
+filename = f'adversarial-points/perturbed_test_points{expt}.npy'
+histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
+qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'
 
 
 perturbed_test_samples =  np.load(filename)
@@ -83,7 +84,10 @@ def perturb_mean(n = 9045):
 perturbed_means = [perturb_mean() for _ in range(5000)]
 plt.hist(perturbed_means)
 plt.savefig(histplot)
+plt.title(f'Histogram of mean loss of perturbed samples for expt {expt}')
+plt.close()
 
 
 scipy.stats.probplot(perturbed_means, plot=plt)
+plt.title(f'Normal qq-plot of mean loss of perturbed samples for expt {expt}')
 plt.savefig(qqplot)
