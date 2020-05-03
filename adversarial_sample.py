@@ -89,3 +89,26 @@ input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
 output = graph.call(input)
 model = tf.keras.Model(inputs=input, outputs=output)
 tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
+
+
+def error(data):
+    x, y = data
+    x = tf.cast(x, dtype = tf.float32)
+    return utils.EntropyLoss(y, graph(x))
+
+purterbed_error = [error(data) for data in zip(perturbed_test_samples, y_test)]
+purterbed_error = [x.numpy() for x in purterbed_error]
+
+import random
+def purterb_mean(n = 9045):
+    index = random.sample(range(n), 400)
+    perturb_errors = [purterbed_error[i] for i in index]
+    return np.mean(perturb_errors)
+
+perturbed_means = [purterb_mean() for _ in range(10000)]
+import matplotlib.pyplot as plt
+plt.hist(perturbed_means)
+plt.show()
+
+import scipy
+scipy.stats.probplot(perturbed_means, plot=plt)
