@@ -4,9 +4,6 @@ from adult_modified import preprocess_adult_data
 from sklearn import linear_model
 import classifier as cl
 import utils
-import time
-import multiprocessing as mp
-import dill
 import random
 import matplotlib.pyplot as plt
 import scipy
@@ -49,16 +46,19 @@ unprotected_directions = projection_matrix(sensetive_directions)
 y_train, y_test = y_train.astype('int32'), y_test.astype('int32')
 x_unprotected_train, x_unprotected_test = tf.cast(x_unprotected_train, dtype = tf.float32), tf.cast(x_unprotected_test, dtype = tf.float32)
 y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
-
-init_graph = utils.ClassifierGraph(50, 2)
-graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 1000)
-
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
+init_graph = utils.ClassifierGraph(50, 2)
+#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 1000) # use for unfair algo
+graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
+                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
 
-expt = 1
+
+
+
+expt = 2
 filename = f'adversarial-points/perturbed_test_points{expt}.npy'
 histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
 qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'
@@ -70,6 +70,7 @@ perturbed_test_samples =  np.load(filename)
 def error(data):
     x, y = data
     x = tf.cast(x, dtype = tf.float32)
+    x = tf.matmul(projection_matrix, x) # for fair algo
     return utils.EntropyLoss(y, graph(x))
 
 perturbed_error = [error(data) for data in zip(perturbed_test_samples, y_test)]
