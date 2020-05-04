@@ -70,6 +70,8 @@ perturbed_test_samples =  np.load(filename)
 def error(data):
     x, y = data
     x = tf.cast(x, dtype = tf.float32)
+    x = tf.reshape(x, (1, -1))
+    y = tf.reshape(y, (1, -1))
     x = tf.matmul(projection_matrix, x) # for fair algo
     return utils.EntropyLoss(y, graph(x))
 
