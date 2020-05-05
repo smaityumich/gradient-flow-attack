@@ -52,13 +52,13 @@ y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
 init_graph = utils.ClassifierGraph(50, 2)
-#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
-graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
-                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
+graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
+#graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
+#                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
 
-def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 1e-2, num_steps = 20):
+def sample_perturbation(data_point, regularizer = 1e4, learning_rate = 1e-3, num_steps = 20):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     #x = tf.matmul(x, unprotected_directions) # Remove if not trying to make algo fair
@@ -87,7 +87,7 @@ end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)
 
 
-expt = 2
+expt = 1
 filename = f'adversarial-points/perturbed_test_points{expt}.npy'
 imagename = f'adversarial-points/graph{expt}.png'
 
