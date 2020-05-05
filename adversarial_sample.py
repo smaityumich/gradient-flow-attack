@@ -58,7 +58,7 @@ graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_dir
 
 
 
-def sample_perturbation(data_point, regularizer = 1e1, learning_rate = 1e-4, num_steps = 20):
+def sample_perturbation(data_point, regularizer = 1e1, learning_rate = 1e-5, num_steps = 20):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     #x = tf.matmul(x, unprotected_directions) # Remove if not trying to make algo fair
@@ -94,9 +94,9 @@ imagename = f'adversarial-points/graph{expt}.png'
 
 np.save(filename, perturbed_test_samples)
 
-input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
-output = graph.call(input)
-model = tf.keras.Model(inputs=input, outputs=output)
-tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
+#input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
+#output = graph.call(input)
+#model = tf.keras.Model(inputs=input, outputs=output)
+#tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
 
 
