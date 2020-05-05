@@ -49,12 +49,14 @@ y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
 init_graph = utils.ClassifierGraph(50, 2)
-#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 1000) # use for unfair algo
+#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
 graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
                         y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
-
+#probs = graph(x_unprotected_test)
+probs = graph(tf.matmul(x_unprotected_test, unprotected_directions))
+standard_error = utils.EntropyLoss(y_test, probs)
 
 
 
@@ -68,12 +70,13 @@ perturbed_test_samples =  np.load(filename)
 
 
 def error(data):
+    global standard_error
     x, y = data
     x = tf.cast(x, dtype = tf.float32)
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
     x = tf.matmul(x, unprotected_directions) # for fair algo
-    return utils.EntropyLoss(y, graph(x))
+    return utils.EntropyLoss(y, graph(x)) - standard_error
 
 perturbed_error = [error(data) for data in zip(perturbed_test_samples, y_test)]
 perturbed_error = [x.numpy() for x in perturbed_error]

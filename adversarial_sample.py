@@ -52,13 +52,13 @@ y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
 init_graph = utils.ClassifierGraph(50, 2)
-#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 1000) # use for unfair algo
+#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
 graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
                         y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
 
-def sample_perturbation(data_point, regularizer = 1e1, learning_rate = 1e-5, num_steps = 20):
+def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 1e-2, num_steps = 20):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     #x = tf.matmul(x, unprotected_directions) # Remove if not trying to make algo fair
@@ -94,9 +94,9 @@ imagename = f'adversarial-points/graph{expt}.png'
 
 np.save(filename, perturbed_test_samples)
 
-input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
-output = graph.call(input)
-model = tf.keras.Model(inputs=input, outputs=output)
-tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
+#input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
+#output = graph.call(input)
+#model = tf.keras.Model(inputs=input, outputs=output)
+#tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
 
 
