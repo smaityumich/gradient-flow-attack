@@ -58,7 +58,7 @@ graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_dir
 
 
 
-def sample_perturbation(data_point, regularizer = 1e-2, learning_rate = 1e-4, num_steps = 20):
+def sample_perturbation(data_point, regularizer = 1e1, learning_rate = 1e-4, num_steps = 20):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     #x = tf.matmul(x, unprotected_directions) # Remove if not trying to make algo fair
@@ -75,7 +75,7 @@ def sample_perturbation(data_point, regularizer = 1e-2, learning_rate = 1e-4, nu
         x = x + learning_rate * gradient / tf.linalg.norm(gradient, ord = 2)
     return x.numpy()
 
-def perturbed_loss(x, y, regularizer = 1e0, learning_rate = 1e-4, num_steps = 20):
+def perturbed_loss(x, y, regularizer = 1e2, learning_rate = 1e-4, num_steps = 20):
     x_perturbed = sample_perturbation((x, y), regularizer, learning_rate, num_steps)
     return utils.EntropyLoss(y, graph(x_perturbed))
 
