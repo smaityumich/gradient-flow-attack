@@ -10,7 +10,7 @@ import dill
 import random
 import matplotlib.pyplot as plt
 import scipy
-plt.ioff()
+
 
 seed = 1
 dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
