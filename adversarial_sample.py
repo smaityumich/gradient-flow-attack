@@ -94,9 +94,9 @@ imagename = f'adversarial-points/graph{expt}.png'
 
 np.save(filename, perturbed_test_samples)
 
-#input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
-#output = graph.call(input)
-#model = tf.keras.Model(inputs=input, outputs=output)
-#tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
+input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
+output = graph.call(input)
+model = tf.keras.Model(inputs=input, outputs=output)
+tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
 
 
