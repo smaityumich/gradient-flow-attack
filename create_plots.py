@@ -72,7 +72,7 @@ def error(data):
     x = tf.cast(x, dtype = tf.float32)
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
-    x = tf.matmul(projection_matrix, x) # for fair algo
+    x = tf.matmul(x, unprotected_directions) # for fair algo
     return utils.EntropyLoss(y, graph(x))
 
 perturbed_error = [error(data) for data in zip(perturbed_test_samples, y_test)]
