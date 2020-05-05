@@ -6,7 +6,6 @@ import classifier as cl
 import utils
 import time
 import multiprocessing as mp
-import dill
 import random
 import matplotlib.pyplot as plt
 import scipy
