@@ -60,25 +60,27 @@ standard_error = utils.EntropyLoss(y_test, probs)
 
 
 
-expt = 2
+expt = 4
 filename = f'adversarial-points/perturbed_test_points{expt}.npy'
+l2_filename = f'adversarial-points/l2_perturbed_test_points{expt}.npy'
 histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
 qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'
 
 
 perturbed_test_samples =  np.load(filename)
+l2_perturbed_test_samples = np.load(l2_filename)
 
 
 def error(data):
     global standard_error
-    x, y = data
-    x = tf.cast(x, dtype = tf.float32)
-    x = tf.reshape(x, (1, -1))
+    x_perturbed, x_l2_perturbed, y = data
+    x_perturbed, x_l2_perturbed = tf.cast(x_perturbed, dtype = tf.float32), tf.cast(x_l2_perturbed, dtype = tf.float32)
+    x_perturbed, x_l2_perturbed = tf.reshape(x_perturbed, (1, -1)), tf.reshape(x_l2_perturbed, (1, -1))
     y = tf.reshape(y, (1, -1))
-    x = tf.matmul(x, unprotected_directions) # for fair algo
-    return utils.EntropyLoss(y, graph(x)) - standard_error
+    x_perturbed, x_l2_perturbed = tf.matmul(x_perturbed, unprotected_directions), tf.matmul(x_l2_perturbed, unprotected_directions) # for fair algo
+    return utils.EntropyLoss(y, graph(x_perturbed)) - utils.EntropyLoss(y, graph(x_l2_perturbed))
 
-perturbed_error = [error(data) for data in zip(perturbed_test_samples, y_test)]
+perturbed_error = [error(data) for data in zip(perturbed_test_samples, l2_perturbed_test_samples, y_test)]
 perturbed_error = [x.numpy() for x in perturbed_error]
 
 
