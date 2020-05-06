@@ -7,7 +7,7 @@ import utils
 import random
 import matplotlib.pyplot as plt
 import scipy
-plt.ioff()
+
 
 seed = 1
 dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
@@ -49,33 +49,38 @@ y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
 init_graph = utils.ClassifierGraph(50, 2)
-#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 1000) # use for unfair algo
+#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
 graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
                         y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
+#probs = graph(x_unprotected_test)
+probs = graph(tf.matmul(x_unprotected_test, unprotected_directions))
+standard_error = utils.EntropyLoss(y_test, probs)
 
 
 
-
-expt = 2
+expt = 4
 filename = f'adversarial-points/perturbed_test_points{expt}.npy'
+l2_filename = f'adversarial-points/l2_perturbed_test_points{expt}.npy'
 histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
 qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'
 
 
 perturbed_test_samples =  np.load(filename)
+l2_perturbed_test_samples = np.load(l2_filename)
 
 
 def error(data):
-    x, y = data
-    x = tf.cast(x, dtype = tf.float32)
-    x = tf.reshape(x, (1, -1))
+    global standard_error
+    x_perturbed, x_l2_perturbed, y = data
+    x_perturbed, x_l2_perturbed = tf.cast(x_perturbed, dtype = tf.float32), tf.cast(x_l2_perturbed, dtype = tf.float32)
+    x_perturbed, x_l2_perturbed = tf.reshape(x_perturbed, (1, -1)), tf.reshape(x_l2_perturbed, (1, -1))
     y = tf.reshape(y, (1, -1))
     x = tf.matmul(x, projection_matrix) # for fair algo
     return utils.EntropyLoss(y, graph(x))
 
-perturbed_error = [error(data) for data in zip(perturbed_test_samples, y_test)]
+perturbed_error = [error(data) for data in zip(perturbed_test_samples, l2_perturbed_test_samples, y_test)]
 perturbed_error = [x.numpy() for x in perturbed_error]
 
 

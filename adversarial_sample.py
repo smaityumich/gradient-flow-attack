@@ -52,16 +52,16 @@ y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
 init_graph = utils.ClassifierGraph(50, 2)
-#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 1000) # use for unfair algo
+#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
 graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
                         y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
 
-def sample_perturbation(data_point, regularizer = 1e-2, learning_rate = 1e-4, num_steps = 20):
+def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 1e-2, num_steps = 20):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
-    x = tf.matmul(x, unprotected_directions) # Remove if not trying to make algo fair
+    #x = tf.matmul(x, unprotected_directions) # Remove if not trying to make algo fair
     y = tf.reshape(y, (1, -1))
     x_start = x
     for _ in range(num_steps):
@@ -75,28 +75,46 @@ def sample_perturbation(data_point, regularizer = 1e-2, learning_rate = 1e-4, nu
         x = x + learning_rate * gradient / tf.linalg.norm(gradient, ord = 2)
     return x.numpy()
 
-def perturbed_loss(x, y, regularizer = 1e-2, learning_rate = 1e-4, num_steps = 20):
-    x_perturbed = sample_perturbation((x, y), regularizer, learning_rate, num_steps)
-    return utils.EntropyLoss(y, graph(x_perturbed))
+
+def l2_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-3, num_steps = 20):
+    x, y = data_point
+    x = tf.reshape(x, (1, -1))
+    y = tf.reshape(y, (1, -1))
+    x_start = x
+    for _ in range(num_steps):
+        with tf.GradientTape() as g:
+            g.watch(x)
+            purturb = x - x_start
+            prob = graph(x)
+            loss = utils.EntropyLoss(y, prob) - regularizer * tf.reduce_sum(purturb**2)
+
+        gradient = g.gradient(loss, x)
+        x = x + learning_rate * gradient / tf.linalg.norm(gradient, ord = 2)
+    return x.numpy()
+
 
 cpus = mp.cpu_count()
 start_time = time.time()
 with mp.Pool(cpus) as pool:
     perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
+    l2_perturbed_test_samples = pool.map(l2_perturbation, zip(x_unprotected_test, y_test))
 end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)
+l2_perturbed_test_samples = np.array(l2_perturbed_test_samples)
 
 
-expt = 2
+expt = 4
 filename = f'adversarial-points/perturbed_test_points{expt}.npy'
+l2_filename = f'adversarial-points/l2_perturbed_test_points{expt}.npy'
 imagename = f'adversarial-points/graph{expt}.png'
 
 
 np.save(filename, perturbed_test_samples)
+np.save(l2_filename, l2_perturbed_test_samples)
 
-input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
-output = graph.call(input)
-model = tf.keras.Model(inputs=input, outputs=output)
-tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
+#input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
+#output = graph.call(input)
+#model = tf.keras.Model(inputs=input, outputs=output)
+#tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
 
 
