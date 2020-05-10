@@ -49,18 +49,18 @@ y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
 init_graph = utils.ClassifierGraph(50, 2)
-graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
-#graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
-#                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
+#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
+graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
+                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
-probs = graph(x_unprotected_test)
-#probs = graph(tf.matmul(x_unprotected_test, unprotected_directions))
+#probs = graph(x_unprotected_test)
+probs = graph(tf.matmul(x_unprotected_test, unprotected_directions))
 standard_error = utils.EntropyLoss(y_test, probs)
 
 
 
-expt = 3
+expt = 4
 filename = f'adversarial-points/perturbed_test_points{expt}.npy'
 l2_filename = f'adversarial-points/l2_perturbed_test_points{expt}.npy'
 histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
@@ -77,7 +77,7 @@ def error(data):
     x_perturbed, x_l2_perturbed = tf.cast(x_perturbed, dtype = tf.float32), tf.cast(x_l2_perturbed, dtype = tf.float32)
     x_perturbed, x_l2_perturbed = tf.reshape(x_perturbed, (1, -1)), tf.reshape(x_l2_perturbed, (1, -1))
     y = tf.reshape(y, (1, -1))
-    #x_perturbed, x_l2_perturbed = tf.matmul(x_perturbed, unprotected_directions), tf.matmul(x_l2_perturbed, unprotected_directions) # for fair algo
+    x_perturbed, x_l2_perturbed = tf.matmul(x_perturbed, unprotected_directions), tf.matmul(x_l2_perturbed, unprotected_directions) # for fair algo
     return utils.EntropyLoss(y, graph(x_perturbed)) - utils.EntropyLoss(y, graph(x_l2_perturbed))
 
 perturbed_error = [error(data) for data in zip(perturbed_test_samples, l2_perturbed_test_samples, y_test)]
@@ -92,6 +92,7 @@ def perturb_mean(n = 9045):
 perturbed_means = [perturb_mean() for _ in range(5000)]
 plt.hist(perturbed_means)
 plt.title(f'Histogram of mean loss of perturbed samples for expt {expt}')
+plt.xticks(rotation = 'vertical')
 plt.savefig(histplot)
 plt.close()
 
