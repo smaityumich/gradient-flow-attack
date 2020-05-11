@@ -33,9 +33,9 @@ def projection_matrix(sensetive_directions):
     _, d = sensetive_directions.shape
     mx = np.identity(d)
     for vector in sensetive_directions:
-        vector = vector/np.linalg.norm(vector, ord=2)
         vector = vector.reshape((-1,1))
-        mx = mx - 0.99* vector @ vector.T
+        vector = vector/np.linalg.norm(vector, ord=2)
+        mx = mx - 0.9999* vector @ vector.T
     return mx
 
 
@@ -62,7 +62,7 @@ def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-2, num
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
-    x_start = x
+    x_start = tf.identity(x)
     for _ in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x)
@@ -79,7 +79,7 @@ def l2_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-2, num_ste
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
-    x_start = x
+    x_start = tf.identity(x)
     for _ in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x)
@@ -93,6 +93,7 @@ def l2_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-2, num_ste
 
 
 cpus = mp.cpu_count()
+print(f'Number of cpus : {cpus}')
 start_time = time.time()
 with mp.Pool(cpus) as pool:
     perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))

@@ -30,9 +30,9 @@ def projection_matrix(sensetive_directions):
     _, d = sensetive_directions.shape
     mx = np.identity(d)
     for vector in sensetive_directions:
-        vector = vector/np.linalg.norm(vector, ord=2)
         vector = vector.reshape((-1,1))
-        mx = mx - 0.99* vector @ vector.T
+        vector = vector/np.linalg.norm(vector, ord=2)
+        mx = mx - 0.9999* vector @ vector.T
     return mx
 
 
