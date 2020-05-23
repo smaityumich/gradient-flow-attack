@@ -49,18 +49,18 @@ y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
 init_graph = utils.ClassifierGraph(50, 2)
-#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
-graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
-                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
+graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
+#graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
+#                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
-#probs = graph(x_unprotected_test)
-probs = graph(tf.matmul(x_unprotected_test, unprotected_directions))
+probs = graph(x_unprotected_test)
+#probs = graph(tf.matmul(x_unprotected_test, unprotected_directions))
 standard_error = utils.EntropyLoss(y_test, probs)
 
 
 
-expt = 4
+expt = '_adv_sample2'
 filename = f'adversarial-points/perturbed_test_points{expt}.npy'
 l2_filename = f'adversarial-points/l2_perturbed_test_points{expt}.npy'
 histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
@@ -85,18 +85,18 @@ perturbed_error = [x.numpy() for x in perturbed_error]
 
 
 def perturb_mean(n = 9045):
-    index = random.sample(range(n), 400)
+    index = random.sample(range(n), 1000)
     srswr_perturb_errors =[perturbed_error[i] for i in index]
     return np.mean(srswr_perturb_errors)
 
 perturbed_means = [perturb_mean() for _ in range(5000)]
 plt.hist(perturbed_means)
-plt.title(f'Histogram of mean loss of perturbed samples for expt {expt}')
+plt.title(f'Histogram of mean loss of perturbed samples for expt{expt}')
 plt.xticks(rotation = 35, fontsize = 'x-small')
 plt.savefig(histplot)
 plt.close()
 
 
 scipy.stats.probplot(perturbed_means, plot=plt)
-plt.title(f'Normal qq-plot of mean loss of perturbed samples for expt {expt}')
+plt.title(f'Normal qq-plot of mean loss of perturbed samples for expt{expt}')
 plt.savefig(qqplot)
