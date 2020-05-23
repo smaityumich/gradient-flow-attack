@@ -52,9 +52,9 @@ y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 
 init_graph = utils.ClassifierGraph(50, 2)
-#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
-graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
-                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
+graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
+#graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
+#                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
 
@@ -103,7 +103,7 @@ perturbed_test_samples = np.array(perturbed_test_samples)
 l2_perturbed_test_samples = np.array(l2_perturbed_test_samples)
 
 
-expt = '_3_fair'
+expt = '_3'
 filename = f'adversarial-points/perturbed_test_points{expt}.npy'
 l2_filename = f'adversarial-points/l2_perturbed_test_points{expt}.npy'
 imagename = f'adversarial-points/graph{expt}.png'
