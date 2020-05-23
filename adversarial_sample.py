@@ -103,7 +103,7 @@ perturbed_test_samples = np.array(perturbed_test_samples)
 l2_perturbed_test_samples = np.array(l2_perturbed_test_samples)
 
 
-expt = 4
+expt = '_3_fair'
 filename = f'adversarial-points/perturbed_test_points{expt}.npy'
 l2_filename = f'adversarial-points/l2_perturbed_test_points{expt}.npy'
 imagename = f'adversarial-points/graph{expt}.png'
