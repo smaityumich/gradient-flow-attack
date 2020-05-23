@@ -26,19 +26,19 @@ protected_regression = linear_model.LinearRegression(fit_intercept = False)
 protected_regression.fit(x_unprotected_train, x_protected_train)
 sensetive_directions = protected_regression.coef_
 
-def projection_matrix(sensetive_directions):
+def projection_matrix(sensetive_directions, eigen = 1):
     _, d = sensetive_directions.shape
     mx = np.identity(d)
     for vector in sensetive_directions:
         vector = vector.reshape((-1,1))
         vector = vector/np.linalg.norm(vector, ord=2)
-        mx = mx - 0.9999* vector @ vector.T
+        mx = mx -  (1-eigen)*vector @ vector.T
     return mx
 
 
 
 
-unprotected_directions = projection_matrix(sensetive_directions)
+unprotected_directions = projection_matrix(sensetive_directions, eigen=0)
 
 
 
