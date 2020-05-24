@@ -37,6 +37,7 @@ sensetive_directions = protected_regression.coef_
 
 
 unprotected_directions = utils.projection_matrix(sensetive_directions)
+inv_unprotected_directions = np.linalg.inv(utils.projection_matrix(sensetive_directions, 0.01))
 
 
 
@@ -45,6 +46,7 @@ y_train, y_test = y_train.astype('int32'), y_test.astype('int32')
 x_unprotected_train, x_unprotected_test = tf.cast(x_unprotected_train, dtype = tf.float32), tf.cast(x_unprotected_test, dtype = tf.float32)
 y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
+inv_unprotected_directions = tf.cast(inv_unprotected_directions, dtype = tf.float32)
 
 init_graph = utils.ClassifierGraph(50, 2)
 #graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
@@ -53,7 +55,7 @@ graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_dir
 
 
 
-def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-3, num_steps = 200):
+def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-4, num_steps = 200):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
@@ -64,7 +66,7 @@ def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-3, num
             loss = utils.EntropyLoss(y, prob)
 
         gradient = g.gradient(loss, x)
-        x = x + learning_rate * (gradient - tf.matmul(gradient, unprotected_directions)) #/ tf.linalg.norm(gradient, ord = np.inf)
+        x = x + learning_rate * tf.matmul(gradient, inv_unprotected_directions) #/ tf.linalg.norm(gradient, ord = np.inf)
     return x.numpy()
 
 

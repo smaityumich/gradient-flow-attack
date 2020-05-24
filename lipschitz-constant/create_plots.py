@@ -60,14 +60,15 @@ perturbed_test_samples =  np.load(filename)
 
 def error(data):
     global standard_error
-    x_perturbed, y = data
-    x_perturbed = tf.cast(x_perturbed, dtype = tf.float32)
-    x_perturbed = tf.reshape(x_perturbed, (1, -1))
-    y = tf.reshape(y, (1, -1))
-    x_perturbed = tf.matmul(x_perturbed, unprotected_directions) # for fair algo
-    return utils.EntropyLoss(y, graph(x_perturbed)) - standard_error
+    x_perturbed, x_original = data
+    x_perturbed, x_original = tf.cast(x_perturbed, dtype = tf.float32), tf.cast(x_original, dtype = tf.float32)
+    x_perturbed = tf.reshape(x_perturbed, (1, -1)), tf.reshape(x_original, (1, -1))
+    diff = tf.matmul(x_perturbed - x_original, unprotected_directions) # for fair algo
+    dx = tf.reduce_sum(diff ** 2)
+    dy = utils.kl(graph(x_perturbed), graph(x_original))
+    return dy/dx
 
-perturbed_error = [error(data) for data in zip(perturbed_test_samples,  y_test)]
+perturbed_error = [error(data) for data in zip(perturbed_test_samples,  x_unprotected_test)]
 perturbed_error = [x.numpy() for x in perturbed_error]
 
 

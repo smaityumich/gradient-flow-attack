@@ -12,6 +12,7 @@ class ClassifierGraph(keras.Model):
     def call(self, x, predict = False):
         x = self.layer1(x)
         x = self.out(x)
+        x, _ = tf.linalg.normalize(x, ord = 1, axis = 1)
         return tf.cast(tf.argmax(x, axis = 1), dtype = tf.float32) if predict else x
 
 
@@ -19,17 +20,21 @@ def EntropyLoss(y, prob):
     return -2*tf.reduce_mean(tf.math.multiply(y, tf.math.log(prob)))
 
 
+def kl(prob1, prob2):
+    return tf.reduce_sum(prob1 * tf.math.log(prob1 / prob2))
+
+
 def _accuracy(y, ypred):
     acc = tf.cast(tf.equal(y, ypred), dtype = tf.float32)
     return tf.reduce_mean(acc)
 
-def projection_matrix(sensetive_directions):
+def projection_matrix(sensetive_directions, eigen = 0):
     _, d = sensetive_directions.shape
     mx = np.identity(d)
     for vector in sensetive_directions:
         vector = vector.reshape((-1,1))
         vector = vector/np.linalg.norm(vector, ord=2)
-        mx = mx - vector @ vector.T
+        mx = mx - (1-eigen) * vector @ vector.T
     return mx
 
 

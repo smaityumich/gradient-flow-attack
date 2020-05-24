@@ -13,6 +13,8 @@ plt.ioff()
 
 
 seed = 1
+tf.random.set_seed(seed)
+np.random.seed(seed)
 dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
 
 x_unprotected_train, x_protected_train = dataset_orig_train.features[:, :39], dataset_orig_train.features[:, 39:]
@@ -61,7 +63,7 @@ graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_te
 
 
 
-def sample_perturbation(data_point, learning_rate = 1e-3, num_steps = 200):
+def sample_perturbation(data_point, learning_rate = 1e-3, num_steps = 20):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
@@ -76,7 +78,7 @@ def sample_perturbation(data_point, learning_rate = 1e-3, num_steps = 200):
     return x.numpy()
 
 
-def l2_perturbation(data_point, learning_rate = 1e-3, num_steps = 200):
+def l2_perturbation(data_point, learning_rate = 1e-3, num_steps = 20):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
