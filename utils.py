@@ -12,6 +12,7 @@ class ClassifierGraph(keras.Model):
     def call(self, x, predict = False):
         x = self.layer1(x)
         x = self.out(x)
+        x, _ = tf.linalg.normalize(x, ord = 1, axis = 1)
         return tf.cast(tf.argmax(x, axis = 1), dtype = tf.float32) if predict else x
 
 
