@@ -1,0 +1,144 @@
+2020-05-24 18:06:58.135576: W tensorflow/stream_executor/platform/default/dso_loader.cc:55] Could not load dynamic library 'libnvinfer.so.6'; dlerror: libnvinfer.so.6: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /sw/arcts/centos7/python3.6-anaconda/5.2.0/lib:/opt/slurm/lib64::
+2020-05-24 18:06:58.136218: W tensorflow/stream_executor/platform/default/dso_loader.cc:55] Could not load dynamic library 'libnvinfer_plugin.so.6'; dlerror: libnvinfer_plugin.so.6: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /sw/arcts/centos7/python3.6-anaconda/5.2.0/lib:/opt/slurm/lib64::
+2020-05-24 18:06:58.136229: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:30] Cannot dlopen some TensorRT libraries. If you would like to use Nvidia GPU with TensorRT, please make sure the missing libraries mentioned above are installed properly.
+2020-05-24 18:07:06.820101: W tensorflow/stream_executor/platform/default/dso_loader.cc:55] Could not load dynamic library 'libcuda.so.1'; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /sw/arcts/centos7/python3.6-anaconda/5.2.0/lib:/opt/slurm/lib64::
+2020-05-24 18:07:06.820280: E tensorflow/stream_executor/cuda/cuda_driver.cc:351] failed call to cuInit: UNKNOWN ERROR (303)
+2020-05-24 18:07:06.820306: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear to be running on this host (gl3032.arc-ts.umich.edu): /proc/driver/nvidia/version does not exist
+2020-05-24 18:07:06.820665: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+2020-05-24 18:07:06.827510: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 3000000000 Hz
+2020-05-24 18:07:06.828433: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x563131e29b50 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-05-24 18:07:06.828458: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+Done step 200
+
+Done step 400
+
+Done step 600
+
+Done step 800
+
+Done step 1000
+
+Done step 1200
+
+Done step 1400
+
+Done step 1600
+
+Done step 1800
+
+Done step 2000
+
+Done step 2200
+
+Done step 2400
+
+Done step 2600
+
+Done step 2800
+
+Done step 3000
+
+Done step 3200
+
+Done step 3400
+
+Done step 3600
+
+Done step 3800
+
+Done step 4000
+
+Done step 4200
+
+Done step 4400
+
+Done step 4600
+
+Done step 4800
+
+Done step 5000
+
+Done step 5200
+
+Done step 5400
+
+Done step 5600
+
+Done step 5800
+
+Done step 6000
+
+Done step 6200
+
+Done step 6400
+
+Done step 6600
+
+Done step 6800
+
+Done step 7000
+
+Done step 7200
+
+Done step 7400
+
+Done step 7600
+
+Done step 7800
+
+Done step 8000
+
+Done step 8200
+
+Done step 8400
+
+Done step 8600
+
+Done step 8800
+
+Done step 9000
+
+Done step 9200
+
+Done step 9400
+
+Done step 9600
+
+Done step 9800
+
+Done step 10000
+
+/sw/arcts/centos7/python3.6-anaconda/5.2.0/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Done for steps 20
+Done for steps 40
+Done for steps 60
+Done for steps 80
+Done for steps 100
+Done for steps 120
+Done for steps 140
+Done for steps 160
+Done for steps 180
+Done for steps 200
+Traceback (most recent call last):
+  File "lipscitz.py", line 89, in <module>
+    plt.plot(steps, mean_lipschitz_const)
+  File "/sw/arcts/centos7/python3.6-anaconda/5.2.0/lib/python3.6/site-packages/matplotlib/pyplot.py", line 3347, in plot
+    ax = gca()
+  File "/sw/arcts/centos7/python3.6-anaconda/5.2.0/lib/python3.6/site-packages/matplotlib/pyplot.py", line 984, in gca
+    return gcf().gca(**kwargs)
+  File "/sw/arcts/centos7/python3.6-anaconda/5.2.0/lib/python3.6/site-packages/matplotlib/pyplot.py", line 601, in gcf
+    return figure()
+  File "/sw/arcts/centos7/python3.6-anaconda/5.2.0/lib/python3.6/site-packages/matplotlib/pyplot.py", line 548, in figure
+    **kwargs)
+  File "/sw/arcts/centos7/python3.6-anaconda/5.2.0/lib/python3.6/site-packages/matplotlib/backend_bases.py", line 161, in new_figure_manager
+    return cls.new_figure_manager_given_figure(num, fig)
+  File "/sw/arcts/centos7/python3.6-anaconda/5.2.0/lib/python3.6/site-packages/matplotlib/backend_bases.py", line 167, in new_figure_manager_given_figure
+    canvas = cls.FigureCanvas(figure)
+  File "/sw/arcts/centos7/python3.6-anaconda/5.2.0/lib/python3.6/site-packages/matplotlib/backends/backend_qt5agg.py", line 24, in __init__
+    super(FigureCanvasQTAgg, self).__init__(figure=figure)
+  File "/sw/arcts/centos7/python3.6-anaconda/5.2.0/lib/python3.6/site-packages/matplotlib/backends/backend_qt5.py", line 234, in __init__
+    _create_qApp()
+  File "/sw/arcts/centos7/python3.6-anaconda/5.2.0/lib/python3.6/site-packages/matplotlib/backends/backend_qt5.py", line 125, in _create_qApp
+    raise RuntimeError('Invalid DISPLAY variable')
+RuntimeError: Invalid DISPLAY variable
