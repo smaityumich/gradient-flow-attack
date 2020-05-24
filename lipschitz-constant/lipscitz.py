@@ -48,9 +48,9 @@ unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
 inv_unprotected_directions = tf.cast(inv_unprotected_directions, dtype = tf.float32)
 
 init_graph = utils.ClassifierGraph(50, 2)
-#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
-graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
-                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
+graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
+#graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
+#                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
 
@@ -82,10 +82,22 @@ def mean_lipschitz(num_steps):
     print(f'Done for steps {num_steps}')
     return np.mean(perturbed_test_samples)
 
-steps = [20, 40, 60, 80, 100, 120, 140, 160, 180, 200]
+steps = [20, 40, 80, 160, 320, 640, 1280]#[20, 40, 60, 80, 100, 120, 140, 160, 180, 200]
+mean_lipschitz_const = [mean_lipschitz(s) for s in steps]
+np.save('output/mean-lipschitz.npy', np.array(mean_lipschitz_const))
+
+
+
+init_graph = utils.ClassifierGraph(50, 2)
+#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
+graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
+                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
+
+
+
+
+#steps = [20, 40, 80, 160, 320, 640, 1280]#[20, 40, 60, 80, 100, 120, 140, 160, 180, 200]
 mean_lipschitz_const = [mean_lipschitz(s) for s in steps]
 np.save('output/mean-lipschitz-fair.npy', np.array(mean_lipschitz_const))
 
-plt.plot(steps, mean_lipschitz_const)
-plt.savefig('output/mean-lipschitz-fair.pdf')
 
