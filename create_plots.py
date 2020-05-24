@@ -60,7 +60,7 @@ standard_error = utils.EntropyLoss(y_test, probs)
 
 
 
-expt = '_3'
+expt = '_adv_sample2'
 filename = f'adversarial-points/perturbed_test_points{expt}.npy'
 l2_filename = f'adversarial-points/l2_perturbed_test_points{expt}.npy'
 histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'

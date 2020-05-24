@@ -26,19 +26,10 @@ protected_regression = linear_model.LinearRegression(fit_intercept = False)
 protected_regression.fit(x_unprotected_train, x_protected_train)
 sensetive_directions = protected_regression.coef_
 
-def projection_matrix(sensetive_directions, eigen = 1):
-    _, d = sensetive_directions.shape
-    mx = np.identity(d)
-    for vector in sensetive_directions:
-        vector = vector.reshape((-1,1))
-        vector = vector/np.linalg.norm(vector, ord=2)
-        mx = mx -  (1-eigen)*vector @ vector.T
-    return mx
 
 
 
-
-unprotected_directions = projection_matrix(sensetive_directions, eigen=0)
+unprotected_directions = utils.projection_matrix(sensetive_directions)
 
 
 
@@ -60,27 +51,25 @@ standard_error = utils.EntropyLoss(y_test, probs)
 
 
 
-expt = '_adv_sample2_fair'
+expt = '_1_fair'
 filename = f'adversarial-points/perturbed_test_points{expt}.npy'
-l2_filename = f'adversarial-points/l2_perturbed_test_points{expt}.npy'
 histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
 qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'
 
 
 perturbed_test_samples =  np.load(filename)
-l2_perturbed_test_samples = np.load(l2_filename)
 
 
 def error(data):
     global standard_error
-    x_perturbed, x_l2_perturbed, y = data
-    x_perturbed, x_l2_perturbed = tf.cast(x_perturbed, dtype = tf.float32), tf.cast(x_l2_perturbed, dtype = tf.float32)
-    x_perturbed, x_l2_perturbed = tf.reshape(x_perturbed, (1, -1)), tf.reshape(x_l2_perturbed, (1, -1))
+    x_perturbed, y = data
+    x_perturbed = tf.cast(x_perturbed, dtype = tf.float32)
+    x_perturbed = tf.reshape(x_perturbed, (1, -1))
     y = tf.reshape(y, (1, -1))
-    x_perturbed, x_l2_perturbed = tf.matmul(x_perturbed, unprotected_directions), tf.matmul(x_l2_perturbed, unprotected_directions) # for fair algo
-    return utils.EntropyLoss(y, graph(x_perturbed)) - utils.EntropyLoss(y, graph(x_l2_perturbed))
+    x_perturbed = tf.matmul(x_perturbed, unprotected_directions) # for fair algo
+    return utils.EntropyLoss(y, graph(x_perturbed)) - standard_error
 
-perturbed_error = [error(data) for data in zip(perturbed_test_samples, l2_perturbed_test_samples, y_test)]
+perturbed_error = [error(data) for data in zip(perturbed_test_samples,  y_test)]
 perturbed_error = [x.numpy() for x in perturbed_error]
 
 
