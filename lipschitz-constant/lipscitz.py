@@ -59,11 +59,12 @@ def lipschitz(data_point, learning_rate = 5e-4):
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
     x_start = x
+    prob_start = graph(x_start)
     for _ in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x)
             prob = graph(x)
-            loss = utils.EntropyLoss(y, prob)
+            loss = tf.norm((tf.matmul(x-x_start, unprotected_directions)))/utils.kl(prob, prob_start)
 
         gradient = g.gradient(loss, x)
         x = x + learning_rate * tf.matmul(gradient, inv_unprotected_directions) #/ tf.linalg.norm(gradient, ord = np.inf)
@@ -82,7 +83,7 @@ def mean_lipschitz(num_steps):
     print(f'Done for steps {num_steps}')
     return np.mean(perturbed_test_samples)
 
-steps = [20, 40, 80, 160, 320, 640, 1280]#[20, 40, 60, 80, 100, 120, 140, 160, 180, 200]
+steps = [20, 40, 60, 80, 100, 120, 140, 160, 180, 200]#[20, 40, 80, 160, 320, 640, 1280]#
 mean_lipschitz_const = [mean_lipschitz(s) for s in steps]
 np.save('output/mean-lipschitz.npy', np.array(mean_lipschitz_const))
 
