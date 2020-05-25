@@ -52,7 +52,7 @@ graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_dir
 
 
 
-def distance_ratio(data_point, regularizer = 1e0, learning_rate = 5e-3, num_steps = 200):
+def distance_ratio(data_point, regularizer = 1e0, learning_rate = 1e-3, num_steps = 200):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))

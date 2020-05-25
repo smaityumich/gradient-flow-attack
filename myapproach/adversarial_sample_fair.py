@@ -37,7 +37,6 @@ sensetive_directions = protected_regression.coef_
 
 
 
-
 unprotected_directions = utils.projection_matrix(sensetive_directions)
 
 
@@ -59,6 +58,7 @@ def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-3, num
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
+    x_start = x
     for _ in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x)
@@ -66,8 +66,21 @@ def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-3, num
             loss = utils.EntropyLoss(y, prob)
 
         gradient = g.gradient(loss, x)
-        x = x + learning_rate * (gradient - tf.matmul(gradient, unprotected_directions)) #/ tf.linalg.norm(gradient, ord = np.inf)
-    return x.numpy()
+        x = x + learning_rate * (gradient - tf.matmul(gradient, unprotected_directions)) 
+
+    return_loss = utils.EntropyLoss(y, graph(tf.matmul(x, unprotected_directions)))
+    x = x_start 
+    for _ in range(num_steps):
+        with tf.GradientTape() as g:
+            g.watch(x)
+            prob = graph(tf.matmul(x, unprotected_directions))
+            loss = utils.EntropyLoss(y, prob)
+
+        gradient = g.gradient(loss, x)
+        x = x + learning_rate * gradient
+
+    return_loss -= utils.EntropyLoss(y, graph(tf.matmul(x, unprotected_directions)))
+    return return_loss.numpy()
 
 
 
@@ -82,8 +95,7 @@ perturbed_test_samples = np.array(perturbed_test_samples)
 
 
 expt = '_1_fair'
-filename = f'adversarial-points/perturbed_test_points{expt}.npy'
-imagename = f'adversarial-points/graph{expt}.png'
+filename = f'adversarial-points/perturbed_loss{expt}.npy'
 
 
 np.save(filename, perturbed_test_samples)
