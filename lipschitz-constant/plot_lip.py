@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-steps = [20, 40, 80, 160, 320, 640, 1280]#[20, 40, 60, 80, 100, 120, 140, 160, 180, 200]
+steps = [20, 40, 60, 80, 100, 120, 140, 160, 180, 200]#[20, 40, 80, 160, 320, 640, 1280]#[20, 40, 60, 80, 100, 120, 140, 160, 180, 200]
 
 # Unfair lipschitz plot
 mean_lip = np.load('output/mean-lipschitz.npy')
