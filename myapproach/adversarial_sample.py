@@ -59,6 +59,7 @@ def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-3, num
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
     x_start = x
+    x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*0.01
     for _ in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x)

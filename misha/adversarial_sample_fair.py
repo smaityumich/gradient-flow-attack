@@ -105,7 +105,7 @@ cpus = mp.cpu_count()
 print(f'Number of cpus : {cpus}')
 start_time = time.time()
 with mp.Pool(cpus) as pool:
-    test_distance_ratios = pool.map(distance_ratio, zip(x_unprotected_test, y_test))
+    test_distance_ratios = pool.map(distance_ratio, zip(x_unprotected_test[:4000], y_test[:4000]))
 end_time = time.time()
 test_distance_ratios = np.array(test_distance_ratios)
 
