@@ -54,7 +54,7 @@ graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_dir
 
 
 
-def sample_perturbation(data_point, regularizer = 1e2, learning_rate = 1e-3, num_steps = 200):
+def sample_perturbation(data_point, regularizer = 1e1, learning_rate = 4e-3, num_steps = 200):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
