@@ -68,18 +68,8 @@ def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-3, num
         gradient = g.gradient(loss, x)
         x = x + learning_rate * (gradient - tf.matmul(gradient, unprotected_directions)) 
 
-    return_loss = utils.EntropyLoss(y, graph(x))
-    x = x_start 
-    for _ in range(num_steps):
-        with tf.GradientTape() as g:
-            g.watch(x)
-            prob = graph(x)
-            loss = utils.EntropyLoss(y, prob)
-
-        gradient = g.gradient(loss, x)
-        x = x + learning_rate * gradient
-
-    return_loss -= utils.EntropyLoss(y, graph(x))
+    return_loss = utils.EntropyLoss(y, graph(x)) - utils.EntropyLoss(y, graph(x_start))
+    
     return return_loss.numpy()
 
 

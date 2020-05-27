@@ -67,22 +67,11 @@ def distance_ratio(data_point, regularizer = 1e0, learning_rate = 1e-3, num_step
         gradient = g.gradient(loss, x)
         x = x + learning_rate * gradient 
 
-    x_fair = x
-    x = x_start
-    for _ in range(num_steps):
-        with tf.GradientTape() as g:
-            g.watch(x)
-            prob = graph(x)
-            perturb = x - x_start
-            loss = utils.EntropyLoss(y, prob) - regularizer * tf.reduce_sum(perturb**2)
-
-        gradient = g.gradient(loss, x)
-        x = x + learning_rate * gradient 
-
-    x_base = x
+    prob = graph(x)
+    prob_start = graph(x_start)
 
 
-    return (tf.norm(x_fair-x_start)/tf.norm(x_base-x_start)).numpy()
+    return (utils.EntropyLoss(y, prob)/utils.EntropyLoss(y, prob_start)).numpy()
 
 
 

@@ -36,6 +36,10 @@ def projection_matrix(sensetive_directions):
     return mx
 
 
+def kl(p1, p2):
+    return tf.reduce_sum(p1 * tf.math.log(p1/p2))
+
+
 
 
 

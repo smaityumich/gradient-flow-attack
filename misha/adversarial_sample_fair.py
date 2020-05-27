@@ -51,38 +51,52 @@ graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_dir
                         y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
+def fair_transform(x):
+    return tf.matmul(x, unprotected_directions)
 
-def distance_ratio(data_point, regularizer = 1e8, learning_rate = 1e-3, num_steps = 200):
+def distance_ratio(data_point, regularizer = 1e0, learning_rate = 1e-3, num_steps = 200):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
     x_start = x
-    for _ in range(num_steps):
-        with tf.GradientTape() as g:
-            g.watch(x)
-            prob = graph(tf.matmul(x, unprotected_directions))
-            perturb = tf.matmul(x - x_start, unprotected_directions)
-            loss = utils.EntropyLoss(y, prob) - regularizer * tf.reduce_sum(perturb**2)
-
-        gradient = g.gradient(loss, x)
-        x = x + learning_rate * gradient 
-
-    x_fair = x
-    x = x_start
-    for _ in range(num_steps):
-        with tf.GradientTape() as g:
-            g.watch(x)
-            prob = graph(tf.matmul(x, unprotected_directions))
-            perturb = x - x_start
-            loss = utils.EntropyLoss(y, prob) - regularizer * tf.reduce_sum(perturb**2)
-
-        gradient = g.gradient(loss, x)
-        x = x + learning_rate * gradient 
-
     x_base = x
+    x_fair = x
+    for _ in range(num_steps):
+        with tf.GradientTape() as g:
+            g.watch(x_base)
+            prob_base = graph(fair_transform(x_base))
+            prob_start = graph(fair_transform(x_start))
+            perturb = x - x_start
+            loss = tf.math.log(utils.kl(prob_base, prob_start)) - tf.math.log(tf.norm(perturb)+1)
+
+        gradient = g.gradient(loss, x_base)
+        x_base = x_base + learning_rate * gradient 
+
+    
+    for _ in range(num_steps):
+        with tf.GradientTape() as g:
+            g.watch(x_fair)
+            prob_fair = graph(fair_transform(x_fair))
+            prob_start = graph(fair_transform(x_start))
+            perturb = tf.matmul(x - x_start, unprotected_directions)
+            loss = tf.math.log(utils.kl(prob_fair, prob_start)) - tf.math.log(tf.norm(perturb)+1)
+
+        gradient = g.gradient(loss, x_fair)
+        x_fair = x_fair + learning_rate * gradient 
+
+    prob_fair = graph(fair_transform(x_fair))
+    prob_base = graph(fair_transform(x_base))
+    prob_start = graph(fair_transform(x_start))
+
+    lf_fair = utils.kl(prob_fair, prob_start)/ (tf.norm(tf.matmul(x_fair-x_start, unprotected_directions)) + 1)
+    lf_base = utils.kl(prob_base, prob_start)/ (tf.norm(tf.matmul(x_base-x_start, unprotected_directions)) + 1)
+    lb_fair = utils.kl(prob_fair, prob_start)/ (tf.norm(x_fair-x_start) + 1)
+    lb_base = utils.kl(prob_base, prob_start)/ (tf.norm(x_base-x_start) + 1)
+
+    
 
 
-    return (tf.norm(x_fair-x_start)/tf.norm(x_base-x_start)).numpy()
+    return (lf_fair/lb_fair-lb_base/lf_base).numpy()
 
 
 
