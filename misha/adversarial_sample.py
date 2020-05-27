@@ -65,7 +65,7 @@ def distance_ratio(data_point, regularizer = 1e0, learning_rate = 1e-3, num_step
             prob_base = graph(x_base)
             prob_start = graph(x_start)
             perturb = x - x_start
-            loss = tf.math.log(utils.kl(prob_base, prob_start)) - tf.math.log(tf.norm(perturb)+1)
+            loss = utils.kl(prob_base, prob_start)/(tf.norm(perturb)+1)
 
         gradient = g.gradient(loss, x_base)
         x_base = x_base + learning_rate * gradient 
@@ -77,7 +77,7 @@ def distance_ratio(data_point, regularizer = 1e0, learning_rate = 1e-3, num_step
             prob_fair = graph(x_fair)
             prob_start = graph(x_start)
             perturb = tf.matmul(x - x_start, unprotected_directions)
-            loss = tf.math.log(utils.kl(prob_fair, prob_start)) - tf.math.log(tf.norm(perturb)+1)
+            loss = (utils.kl(prob_fair, prob_start))/(tf.norm(perturb)+1)
 
         gradient = g.gradient(loss, x_fair)
         x_fair = x_fair + learning_rate * gradient 

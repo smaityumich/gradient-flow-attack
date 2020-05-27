@@ -27,6 +27,8 @@ def _accuracy(y, ypred):
     acc = tf.cast(tf.equal(y, ypred), dtype = tf.float32)
     return tf.reduce_mean(acc)
 
+def kl(p, q)
+    return tf.reduce_sum(q * tf.math.log(q/p))
 
 
 def gram_schmidt(X):
