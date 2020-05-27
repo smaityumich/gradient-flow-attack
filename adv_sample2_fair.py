@@ -70,7 +70,7 @@ def sample_perturbation(data_point, learning_rate = 1e-3, num_steps = 20):
     for _ in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x)
-            prob = graph(x)
+            prob = graph(tf.matmul(x, unprotected_directions))
             loss = utils.EntropyLoss(y, prob)
 
         gradient = g.gradient(loss, x)
@@ -85,7 +85,7 @@ def l2_perturbation(data_point, learning_rate = 1e-3, num_steps = 20):
     for _ in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x)
-            prob = graph(x)
+            prob = graph(tf.matmul(x, unprotected_directions))
             loss = utils.EntropyLoss(y, prob)
 
         gradient = g.gradient(loss, x)

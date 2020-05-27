@@ -15,7 +15,7 @@ np.random.seed(seed)
 
 
 expt = '_1'
-filename = f'adversarial-points/perturbed_test_points{expt}.npy'
+filename = f'outcome/perturbed_loss{expt}.npy'
 histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
 qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'
 
@@ -44,7 +44,7 @@ plt.savefig(qqplot)
 plt.close()
 
 expt = '_1_fair'
-filename = f'adversarial-points/perturbed_test_points{expt}.npy'
+filename = f'outcome/perturbed_loss{expt}.npy'
 histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
 qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'
 
