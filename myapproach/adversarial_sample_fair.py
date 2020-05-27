@@ -71,7 +71,7 @@ def sample_perturbation(data_point, regularizer = 1e1, learning_rate = 4e-3, num
         x = x + learning_rate * gradient#(gradient - tf.matmul(gradient, unprotected_directions)) 
 
     return_loss = utils.EntropyLoss(y, graph(tf.matmul(x, unprotected_directions)))\
-         / utils.EntropyLoss(y, graph(tf.matmul(x_start, unprotected_directions)))
+         - utils.EntropyLoss(y, graph(tf.matmul(x_start, unprotected_directions)))
     
     return return_loss.numpy()
 
