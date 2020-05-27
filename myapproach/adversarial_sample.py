@@ -95,7 +95,7 @@ perturbed_test_samples = np.array(perturbed_test_samples)
 
 
 expt = '_1'
-filename = f'adversarial-points/perturbed_loss{expt}.npy'
+filename = f'outcome/perturbed_loss{expt}.npy'
 
 
 np.save(filename, perturbed_test_samples)
