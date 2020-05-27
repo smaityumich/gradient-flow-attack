@@ -26,11 +26,11 @@ test_ratio =  np.load(filename)
 
 
 def ratio_mean(n = 9045):
-    index = random.sample(range(n), 1000)
+    index = random.sample(range(n), 100)
     srswr_ratio=[test_ratio[i] for i in index]
     return np.mean(srswr_ratio)
 
-ratio_means = [ratio_mean() for _ in range(5000)]
+ratio_means = [ratio_mean(1000) for _ in range(5000)]
 plt.hist(ratio_means)
 plt.title(f'Histogram of mean loss of ratios for expt{expt}')
 plt.xticks(rotation = 35, fontsize = 'x-small')
@@ -56,7 +56,7 @@ test_ratio =  np.load(filename)
 
 
 
-ratio_means = [ratio_mean() for _ in range(5000)]
+ratio_means = [ratio_mean(1000) for _ in range(5000)]
 plt.hist(ratio_means)
 plt.title(f'Histogram of mean loss of ratios for expt{expt}')
 plt.xticks(rotation = 35, fontsize = 'x-small')

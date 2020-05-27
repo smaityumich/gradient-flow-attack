@@ -59,8 +59,8 @@ def distance_ratio(data_point, regularizer = 1e0, learning_rate = 1e-3, num_step
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
     x_start = x
-    x_base = x + tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)
-    x_fair = x + tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)
+    x_base = x + tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*0.01
+    x_fair = x + tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*0.01
     for _ in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x_base)
@@ -105,7 +105,7 @@ cpus = mp.cpu_count()
 print(f'Number of cpus : {cpus}')
 start_time = time.time()
 with mp.Pool(cpus) as pool:
-    test_distance_ratios = pool.map(distance_ratio, zip(x_unprotected_test[:4000], y_test[:4000]))
+    test_distance_ratios = pool.map(distance_ratio, zip(x_unprotected_test[:1000], y_test[:1000]))
 end_time = time.time()
 test_distance_ratios = np.array(test_distance_ratios)
 
