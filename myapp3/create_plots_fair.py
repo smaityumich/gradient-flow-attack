@@ -4,12 +4,9 @@ from adult_modified import preprocess_adult_data
 from sklearn import linear_model
 import classifier as cl
 import utils
-import time
-import multiprocessing as mp
 import random
 import matplotlib.pyplot as plt
 import scipy
-plt.ioff()
 
 
 seed = 1
@@ -34,9 +31,6 @@ sensetive_directions = protected_regression.coef_
 
 
 
-
-
-
 unprotected_directions = utils.projection_matrix(sensetive_directions)
 
 
@@ -53,48 +47,48 @@ graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_dir
                         y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
+#probs = graph(x_unprotected_test)
+probs = graph(tf.matmul(x_unprotected_test, unprotected_directions))
+standard_error = utils.EntropyLoss(y_test, probs)
 
-def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-3, num_steps = 200):
-    x, y = data_point
-    x = tf.reshape(x, (1, -1))
-    y = tf.reshape(y, (1, -1))
-    x_start = x
-    for _ in range(num_steps):
-        with tf.GradientTape() as g:
-            g.watch(x)
-            prob = graph(tf.matmul(x, unprotected_directions))
-            perturb = tf.matmul(x-x_start, unprotected_directions)
-            loss = utils.EntropyLoss(y, prob) - regularizer * tf.norm(perturb)
-
-        gradient = g.gradient(loss, x)
-        x = x + learning_rate * gradient#(gradient - tf.matmul(gradient, unprotected_directions)) 
-
-    return_loss = utils.EntropyLoss(y, graph(tf.matmul(x, unprotected_directions)))\
-         / utils.EntropyLoss(y, graph(tf.matmul(x_start, unprotected_directions)))
-    
-    return return_loss.numpy()
-
-
-
-
-cpus = mp.cpu_count()
-print(f'Number of cpus : {cpus}')
-start_time = time.time()
-with mp.Pool(cpus) as pool:
-    perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
-end_time = time.time()
-perturbed_test_samples = np.array(perturbed_test_samples)
 
 
 expt = '_1_fair'
-filename = f'outcome/perturbed_loss{expt}.npy'
+filename = f'adversarial-points/perturbed_test_points{expt}.npy'
+histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
+qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'
 
 
-np.save(filename, perturbed_test_samples)
-
-#input = tf.keras.Input(shape=(39,), dtype='float32', name='input')
-#output = graph.call(input)
-#model = tf.keras.Model(inputs=input, outputs=output)
-#tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
+perturbed_test_samples =  np.load(filename)
 
 
+def error(data):
+    global standard_error
+    x_original, x_perturbed, y = data
+    x_original, x_perturbed = tf.cast(x_original, dtype = tf.float32), tf.cast(x_perturbed, dtype = tf.float32)
+    x_original, x_perturbed = tf.reshape(x_original, (1, -1)), tf.reshape(x_perturbed, (1, -1))
+    y = tf.reshape(y, (1, -1))
+    x_perturbed = tf.matmul(x_perturbed, unprotected_directions) # for fair algo
+    return utils.EntropyLoss(y, graph(x_perturbed)) - utils.EntropyLoss(y, graph(x_original))
+
+perturbed_error = [error(data) for data in zip(x_unprotected_test, perturbed_test_samples,  y_test)]
+perturbed_error = [x.numpy() for x in perturbed_error]
+
+
+
+def perturb_mean(n = 9045):
+    index = random.sample(range(n), 1000)
+    srswr_perturb_errors =[perturbed_error[i] for i in index]
+    return np.mean(srswr_perturb_errors)
+
+perturbed_means = [perturb_mean() for _ in range(5000)]
+plt.hist(perturbed_means)
+plt.title(f'Histogram of mean loss of perturbed samples for expt{expt}')
+plt.xticks(rotation = 35, fontsize = 'x-small')
+plt.savefig(histplot)
+plt.close()
+
+
+scipy.stats.probplot(perturbed_means, plot=plt)
+plt.title(f'Normal qq-plot of mean loss of perturbed samples for expt{expt}')
+plt.savefig(qqplot)

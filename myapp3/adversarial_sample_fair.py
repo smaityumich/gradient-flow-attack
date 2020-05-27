@@ -38,6 +38,7 @@ sensetive_directions = protected_regression.coef_
 
 
 unprotected_directions = utils.projection_matrix(sensetive_directions)
+inv_unprotected_dir = np.linalg.inv(utils.projection_matrix(sensetive_directions, 0.01))/100
 
 
 
@@ -46,11 +47,12 @@ y_train, y_test = y_train.astype('int32'), y_test.astype('int32')
 x_unprotected_train, x_unprotected_test = tf.cast(x_unprotected_train, dtype = tf.float32), tf.cast(x_unprotected_test, dtype = tf.float32)
 y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
+inv_unprotected_dir = tf.cast(inv_unprotected_dir, dtype = tf.float32)
 
 init_graph = utils.ClassifierGraph(50, 2)
-graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
-#graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
-#                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
+#graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
+graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
+                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
 
 
 
@@ -62,14 +64,14 @@ def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-3, num
     for _ in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x)
-            prob = graph(x)
-            perturb = tf.matmul(x-x_start, unprotected_directions)
-            loss = utils.EntropyLoss(y, prob) - regularizer * tf.norm(perturb)
+            prob = graph(tf.matmul(x, unprotected_directions))
+            loss = utils.EntropyLoss(y, prob)
 
         gradient = g.gradient(loss, x)
-        x = x + learning_rate * gradient#(gradient - tf.matmul(gradient, unprotected_directions)) 
+        x = x + learning_rate * tf.matmul(gradient, inv_unprotected_dir)#(gradient - tf.matmul(gradient, unprotected_directions)) 
 
-    return_loss = utils.EntropyLoss(y, graph(x)) / utils.EntropyLoss(y, graph(x_start))
+    return_loss = utils.EntropyLoss(y, graph(tf.matmul(x, unprotected_directions)))\
+         / utils.EntropyLoss(y, graph(tf.matmul(x_start, unprotected_directions)))
     
     return return_loss.numpy()
 
@@ -85,7 +87,7 @@ end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)
 
 
-expt = '_1'
+expt = '_1_fair'
 filename = f'outcome/perturbed_loss{expt}.npy'
 
 
