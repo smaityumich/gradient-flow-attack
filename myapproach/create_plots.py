@@ -41,7 +41,7 @@ plt.close()
 scipy.stats.probplot(ratio_means, plot=plt)
 plt.title(f'Normal qq-plot of mean loss of ratios for expt{expt}')
 plt.savefig(qqplot)
-
+plt.close()
 
 expt = '_1_fair'
 filename = f'adversarial-points/perturbed_test_points{expt}.npy'
