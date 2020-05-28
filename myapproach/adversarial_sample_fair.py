@@ -31,13 +31,18 @@ protected_regression = linear_model.LinearRegression(fit_intercept = False)
 protected_regression.fit(x_unprotected_train, x_protected_train)
 sensetive_directions = protected_regression.coef_
 
-
+sensetive_directions = scipy.linalg.orth(sensetive_directions.T).T
+for i, s in enumerate(sensetive_directions):
+    while np.linalg.norm(s) != 1:
+        s = s/ np.linalg.norm(s)
+    sensetive_directions[i] = s
 
 
 
 
 
 unprotected_directions = utils.projection_matrix(sensetive_directions)
+protected_directions = utils.projection_matrix2(sensetive_directions)
 
 
 
@@ -46,11 +51,13 @@ y_train, y_test = y_train.astype('int32'), y_test.astype('int32')
 x_unprotected_train, x_unprotected_test = tf.cast(x_unprotected_train, dtype = tf.float32), tf.cast(x_unprotected_test, dtype = tf.float32)
 y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
 unprotected_directions = tf.cast(unprotected_directions, dtype = tf.float32)
+protected_directions = tf.cast(protected_directions, dtype = tf.float32)
+sensetive_directions = tf.cast(sensetive_directions, dtype = tf.float32)
 
 init_graph = utils.ClassifierGraph(50, 2)
 #graph = cl.Classifier(init_graph, x_unprotected_train, y_train, x_unprotected_test, y_test, num_steps = 10000) # use for unfair algo
-graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_directions), 
-                        y_train, tf.matmul(x_unprotected_test, unprotected_directions), y_test, num_steps = 10000) # for fair algo
+graph = cl.Classifier(init_graph, utils.unprotected_direction(x_unprotected_train, sensetive_directions), 
+                        y_train, num_steps = 10000) # for fair algo
 
 
 
@@ -59,19 +66,20 @@ def sample_perturbation(data_point, regularizer = 1e1, learning_rate = 5e-2, num
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
     x_start = x
-    x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*0.01
+    #x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*0.01
     for _ in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x)
-            prob = graph(tf.matmul(x, unprotected_directions))
-            perturb = tf.matmul(x-x_start, unprotected_directions)
+            prob = graph(utils.unprotected_direction(x, sensetive_directions))
+            #perturb = tf.matmul(x-x_start, unprotected_directions)
             loss = utils.EntropyLoss(y, prob)# - regularizer * tf.norm(perturb)
 
         gradient = g.gradient(loss, x)
-        x = x + learning_rate * (gradient - tf.matmul(gradient, unprotected_directions)) 
+        x = x + learning_rate * utils.protected_direction(gradient, sensetive_directions)
 
-    return_loss = utils.EntropyLoss(y, graph(tf.matmul(x, unprotected_directions)))\
-         / utils.EntropyLoss(y, graph(tf.matmul(x_start, unprotected_directions)))
+    print(utils.unprotected_direction(x - x_start, sensetive_directions))
+    return_loss = utils.EntropyLoss(y, graph(utils.unprotected_direction(x, sensetive_directions)))\
+         / utils.EntropyLoss(y, graph(utils.unprotected_direction(x_start, sensetive_directions)))
     
     return return_loss.numpy()
 
