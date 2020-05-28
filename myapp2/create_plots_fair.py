@@ -10,6 +10,8 @@ import scipy
 
 
 seed = 1
+tf.random.set_seed(seed)
+np.random.seed(seed)
 dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
 
 x_unprotected_train, x_protected_train = dataset_orig_train.features[:, :39], dataset_orig_train.features[:, 39:]

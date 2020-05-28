@@ -58,10 +58,26 @@ def projection_matrix(sensetive_directions):
         mx = mx - vector @ vector.T
     return mx
 
+def projection_matrix2(sensetive_directions):
+    orthogonal_sd = scipy.linalg.orth(sensetive_directions.T).T
+    _, d = orthogonal_sd.shape
+
+    mx = np.zeros((d, d))
+    for vector in sensetive_directions:
+        vector = vector.reshape((-1,1))
+        while np.linalg.norm(vector) != 1:
+            vector = vector/np.linalg.norm(vector)
+        mx = mx + vector @ vector.T
+    return mx
 
 
 
-
+def protected_direction(x, sensetive_directions):
+    x = x @ tf.linalg.matrix_transpose(sensetive_directions) @ sensetive_directions
+    return x
+def unprotected_direction(x, sensetive_directions):
+    x = x - x @ tf.linalg.matrix_transpose(sensetive_directions) @ sensetive_directions
+    return x
 
 
 
