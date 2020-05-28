@@ -61,7 +61,7 @@ graph = cl.Classifier(init_graph, utils.unprotected_direction(x_unprotected_trai
 
 
 
-def sample_perturbation(data_point, regularizer = 1e2, learning_rate = 5e-2, num_steps = 200):
+def sample_perturbation(data_point, regularizer = 5, learning_rate = 5e-2, num_steps = 200):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
@@ -77,7 +77,7 @@ def sample_perturbation(data_point, regularizer = 1e2, learning_rate = 5e-2, num
         gradient = g.gradient(loss, x)
         x = x + learning_rate * gradient #utils.protected_direction(gradient, sensetive_directions)
 
-    print(utils.unprotected_direction(x - x_start, sensetive_directions))
+    #print(utils.unprotected_direction(x - x_start, sensetive_directions))
     return_loss = utils.EntropyLoss(y, graph(utils.unprotected_direction(x, sensetive_directions)))\
          / utils.EntropyLoss(y, graph(utils.unprotected_direction(x_start, sensetive_directions)))
     
@@ -95,7 +95,7 @@ end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)
 
 
-expt = '_2_fair'
+expt = '_4_fair'
 filename = f'outcome/perturbed_loss{expt}.npy'
 
 
