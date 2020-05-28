@@ -14,10 +14,10 @@ tf.random.set_seed(seed)
 np.random.seed(seed)
 
 
-expt = '_2'
+expt = '_4'
 filename = f'outcome/perturbed_loss{expt}.npy'
-histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
-qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'
+histplot = f'plots/perturbed-mean-entropy-hist{expt}.png'
+qqplot = f'plots/perturbed-mean-entropy-qqplot{expt}.png'
 
 
 test_ratio =  np.load(filename)
@@ -44,10 +44,10 @@ plt.title(f'Normal qq-plot of mean loss of ratios for expt{expt}')
 plt.savefig(qqplot)
 plt.close()
 
-expt = '_2_fair'
+expt = '_4_fair'
 filename = f'outcome/perturbed_loss{expt}.npy'
-histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
-qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'
+histplot = f'plots/perturbed-mean-entropy-hist{expt}.png'
+qqplot = f'plots/perturbed-mean-entropy-qqplot{expt}.png'
 
 
 test_ratio =  np.load(filename)
@@ -56,7 +56,7 @@ m = test_ratio.shape[0]
 
 
 plt.hist(test_ratio)
-plt.savefig(f'adversarial-points/histogram-prop{expt}.pdf')
+plt.savefig(f'plots/histogram-prop{expt}.pdf')
 plt.close()
 
 ratio_means = [ratio_mean(m) for _ in range(5000)]
