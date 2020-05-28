@@ -61,18 +61,18 @@ graph = cl.Classifier(init_graph, utils.unprotected_direction(x_unprotected_trai
 
 
 
-def sample_perturbation(data_point, regularizer = 1e2, learning_rate = 5e-2, num_steps = 200):
+def sample_perturbation(data_point, regularizer = 1e0, learning_rate = 5e-2, num_steps = 200):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
     x_start = x
-    x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*1e-9
+    #x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*1e-9
     for _ in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x)
             prob = graph(utils.unprotected_direction(x, sensetive_directions))
             perturb = utils.unprotected_direction(x-x_start, sensetive_directions)
-            loss = utils.EntropyLoss(y, prob) - regularizer * tf.norm(perturb)
+            loss = utils.EntropyLoss(y, prob) - regularizer * tf.norm(perturb)**2
 
         gradient = g.gradient(loss, x)
         x = x + learning_rate * utils.protected_direction(gradient, sensetive_directions)
@@ -95,7 +95,7 @@ end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)
 
 
-expt = '_4_fair'
+expt = '_3_fair'
 filename = f'outcome/perturbed_loss{expt}.npy'
 
 
