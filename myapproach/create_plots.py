@@ -14,7 +14,7 @@ tf.random.set_seed(seed)
 np.random.seed(seed)
 
 
-expt = '_4'
+expt = '_3'
 filename = f'outcome/perturbed_loss{expt}.npy'
 histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
 qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'
@@ -44,7 +44,7 @@ plt.title(f'Normal qq-plot of mean loss of ratios for expt{expt}')
 plt.savefig(qqplot)
 plt.close()
 
-expt = '_4_fair'
+expt = '_3_fair'
 filename = f'outcome/perturbed_loss{expt}.npy'
 histplot = f'adversarial-points/perturbed-mean-entropy-hist{expt}.png'
 qqplot = f'adversarial-points/perturbed-mean-entropy-qqplot{expt}.png'

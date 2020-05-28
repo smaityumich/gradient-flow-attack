@@ -71,7 +71,7 @@ def sample_perturbation(data_point, regularizer = 1e1, learning_rate = 5e-2, num
         x = x + learning_rate * (gradient - tf.matmul(gradient, unprotected_directions)) 
 
     return_loss = utils.EntropyLoss(y, graph(tf.matmul(x, unprotected_directions)))\
-         / utils.EntropyLoss(y, graph(tf.matmul(x_start, unprotected_directions)))
+         - utils.EntropyLoss(y, graph(tf.matmul(x_start, unprotected_directions)))
     
     return return_loss.numpy()
 
@@ -87,7 +87,7 @@ end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)
 
 
-expt = '_4_fair'
+expt = '_3_fair'
 filename = f'outcome/perturbed_loss{expt}.npy'
 
 
