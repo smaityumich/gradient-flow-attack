@@ -32,7 +32,7 @@ def Classifier(graph, x_train, y_train,  num_steps = 10000, batch_size = 250, le
         gradients = g.gradient(loss, variables)
         optimizer.apply_gradients(zip(gradients, variables))
     
-    for step, data in enumerate(*batch_data, 1):
+    for step, data in enumerate(batch_data, 1):
         batch_data_train = data
         train_step(batch_data_train, step)
         if step % 200 == 0:

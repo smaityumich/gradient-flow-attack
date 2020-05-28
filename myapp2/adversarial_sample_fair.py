@@ -61,7 +61,7 @@ graph = cl.Classifier(init_graph, utils.unprotected_direction(x_unprotected_trai
 
 
 
-def sample_perturbation(data_point, regularizer = 1e2, learning_rate = 5e-3, num_steps = 200):
+def sample_perturbation(data_point, regularizer = 1e2, learning_rate = 5e-2, num_steps = 200):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
@@ -71,8 +71,8 @@ def sample_perturbation(data_point, regularizer = 1e2, learning_rate = 5e-3, num
         with tf.GradientTape() as g:
             g.watch(x)
             prob = graph(utils.unprotected_direction(x, sensetive_directions))
-            perturb = utils.unprotected_direction(gradient, sensetive_directions)
-            loss = utils.EntropyLoss(y, prob) - regularizer * tf.norm(perturb)
+            perturb = utils.unprotected_direction(x-x_start, sensetive_directions)
+            loss = utils.EntropyLoss(y, prob)/ regularizer - tf.norm(perturb)
 
         gradient = g.gradient(loss, x)
         x = x + learning_rate * utils.protected_direction(gradient, sensetive_directions)

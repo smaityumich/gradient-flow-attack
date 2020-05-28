@@ -77,7 +77,7 @@ def sample_perturbation(data_point, regularizer = 1e1, learning_rate = 5e-2, num
         gradient = g.gradient(loss, x)
         x = x + learning_rate * utils.protected_direction(gradient, sensetive_directions)
 
-    print(utils.unprotected_direction(x - x_start, sensetive_directions))
+    #print(utils.unprotected_direction(x - x_start, sensetive_directions))
     return_loss = utils.EntropyLoss(y, graph(utils.unprotected_direction(x, sensetive_directions)))\
          / utils.EntropyLoss(y, graph(utils.unprotected_direction(x_start, sensetive_directions)))
     
