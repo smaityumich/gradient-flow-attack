@@ -13,11 +13,10 @@ import utils
 
 
 def Classifier(graph, x_train, y_train,  num_steps = 10000, batch_size = 250, learning_rate = 1e-4):
-    batch_data = []
     # Tensor slice for train data
     batch = tf.data.Dataset.from_tensor_slices((x_train, y_train))
     batch = batch.repeat().shuffle(5000).batch(batch_size)
-    batch_data.append(batch.take(num_steps))
+    batch_data= batch.take(num_steps)
 
     
 
