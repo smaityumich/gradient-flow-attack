@@ -54,7 +54,7 @@ graph = cl.Classifier(init_graph, tf.matmul(x_unprotected_train, unprotected_dir
 
 
 
-def sample_perturbation(data_point, regularizer = 1e1, learning_rate = 5e-3, num_steps = 200):
+def sample_perturbation(data_point, regularizer = 1e1, learning_rate = 5e-2, num_steps = 200):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
@@ -87,7 +87,7 @@ end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)
 
 
-expt = '_4_fair'
+expt = '_3_fair'
 filename = f'outcome/perturbed_loss{expt}.npy'
 
 
