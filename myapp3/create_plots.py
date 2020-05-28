@@ -56,7 +56,7 @@ m = test_ratio.shape[0]
 
 
 plt.hist(test_ratio)
-plt.xticks(rotation = 35, fontsize = 'xx-small')
+plt.xticks(rotation = 15, fontsize = 'xx-small')
 plt.savefig(f'plots/histogram-prop{expt}.pdf')
 plt.close()
 
