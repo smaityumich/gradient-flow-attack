@@ -56,7 +56,7 @@ m = test_ratio.shape[0]
 
 
 plt.hist(test_ratio)
-plt.savefig(f'outcome/histogram-prop{expt}.pdf')
+plt.savefig(f'adversarial-points/histogram-prop{expt}.pdf')
 plt.close()
 
 ratio_means = [ratio_mean(m) for _ in range(5000)]
