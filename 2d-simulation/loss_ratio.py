@@ -33,13 +33,16 @@ def sample_perturbation(data, theta, fair_direction, regularizer = 5, learning_r
     fair_metric = fair_metric_fn(fair_direction)
     gradient0 = x_start
     #x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*1e-9
-    for _ in range(num_steps):
+    for i in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x_fair)
             prob = classifier(x_fair)
             loss = utils.EntropyLoss(y, prob)  - regularizer * tf.reduce_sum(fair_metric(x_fair - x_start)**2)
-        
-        gradient0, gradient = gradient, g.gradient(loss, x_fair)
+
+        if i == 0:
+            gradient = g.gradient(loss, x_fair)
+        else:
+            gradient0, gradient = gradient, g.gradient(loss, x_fair)
     
         if not tf.reduce_all(tf.math.is_finite(loss)):
             x_fair = x_fair - learning_rate * gradient0
@@ -62,13 +65,16 @@ def sample_perturbation_l2_base(data, theta, fair_direction, regularizer = 5, le
     x_base = x
     gradient0 = x_start
     #x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*1e-9
-    for _ in range(num_steps):
+    for i in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x_fair)
             prob = classifier(x_fair)
             loss = utils.EntropyLoss(y, prob)  - regularizer * tf.reduce_sum(fair_metric(x_fair - x_start)**2)
 
-        gradient0, gradient = gradient, g.gradient(loss, x_fair)
+        if i ==0:
+            gradient = g.gradient(loss, x_fair)
+        else:
+            gradient0, gradient = gradient, g.gradient(loss, x_fair)
         
         if not tf.reduce_all(tf.math.is_finite(loss)):
             x_fair = x_fair - learning_rate * gradient0
