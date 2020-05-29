@@ -50,10 +50,6 @@ print('\nRace:')
 _ = group_metrics(y_test[:,1], test_logits.argmax(axis=1), group_test[:,1], label_protected=0, label_good=1)
 
 
-for k in variables.keys():
-    u = variables[k]
-    u = u.numpy()
-    variables[k] = u.tolist()
-
+weight = [w.tolist() for w in weights]
 with open('data.txt', 'w') as f:
-    json.dump(variables, f)
+    json.dump(weight, f)

@@ -27,9 +27,18 @@ y_train, y_test = dataset_orig_train.labels.reshape((-1,)), dataset_orig_test.la
 
 ## Running linear regression to get sensetive directions 
 
-protected_regression = linear_model.LinearRegression(fit_intercept = False)
-protected_regression.fit(x_unprotected_train, x_protected_train)
-sensetive_directions = protected_regression.coef_
+#protected_regression = linear_model.LinearRegression(fit_intercept = False)
+#protected_regression.fit(x_unprotected_train, x_protected_train)
+#sensetive_directions = protected_regression.coef_
+
+sensetive_directions = []
+protected_regression = linear_model.LogisticRegression(fit_intercept = True)
+protected_regression.fit(x_unprotected_train, x_protected_train[:, 0])
+sensetive_directions.append(protected_regression.coef_.reshape((-1,)))
+protected_regression.fit(x_unprotected_train, x_protected_train[:, 1])
+sensetive_directions.append(protected_regression.coef_.reshape((-1,)))
+sensetive_directions = np.array(sensetive_directions)
+
 
 sensetive_directions = scipy.linalg.orth(sensetive_directions.T).T
 for i, s in enumerate(sensetive_directions):
