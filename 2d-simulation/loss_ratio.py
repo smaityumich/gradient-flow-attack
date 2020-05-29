@@ -115,6 +115,8 @@ def mean_ratio(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num
         ratios = pool.map(partial(sample_perturbation, theta = theta, fair_direction = fair_direction,\
             regularizer = regularizer, learning_rate = learning_rate, num_steps = num_steps), zip(x, y))
     print(f'Done for mean ratio of {theta}')
+    ratios = np.array(ratios)
+    ratios = ratios[np.isfinite(ratios)]
     return np.mean(ratios)
 
 
@@ -128,6 +130,8 @@ def mean_ratio_l2_base(theta, fair_direction, regularizer = 1, learning_rate = 5
         ratios = pool.map(partial(sample_perturbation_l2_base, theta = theta, fair_direction = fair_direction,\
             regularizer = regularizer, learning_rate = learning_rate, num_steps = num_steps), zip(x, y))
     print(f'Done for mean ratio l2 base of {theta}')
+    ratios = np.array(ratios)
+    ratios = ratios[np.isfinite(ratios)]
     return np.mean(ratios)
 
 
