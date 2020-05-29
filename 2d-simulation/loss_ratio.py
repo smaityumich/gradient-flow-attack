@@ -147,9 +147,9 @@ for t1 in theta1:
     mean_ratio_theta_row = []
     mean_ratio_theta_l2_base_row = []
     for t2 in theta2:
-        r = mean_ratio([t1, t2], fair_direction, regularizer= 1, learning_rate=4e-3, num_steps=50)
+        r = mean_ratio([t1, t2], fair_direction, regularizer= 2, learning_rate=1e-2, num_steps=100)
         mean_ratio_theta_row.append(r)
-        r = mean_ratio_l2_base([t1, t2], fair_direction, regularizer= 1, learning_rate=4e-3, num_steps=50)
+        r = mean_ratio_l2_base([t1, t2], fair_direction, regularizer= 2, learning_rate=1e-2, num_steps=100)
         mean_ratio_theta_l2_base_row.append(r)
     mean_ratio_theta.append(mean_ratio_theta_row)
     mean_ratio_theta_l2_base.append(mean_ratio_theta_l2_base_row)
@@ -157,5 +157,5 @@ for t1 in theta1:
 
 
 
-np.save('data/mean_ratio_theta_fair.npy', np.array(mean_ratio_theta))
-np.save('data/mean_ratio_theta_l2_base_fair.npy', np.array(mean_ratio_theta_l2_base))
+np.save('data/mean_ratio.npy', np.array(mean_ratio_theta))
+np.save('data/mean_ratio_l2.npy', np.array(mean_ratio_theta_l2_base))
