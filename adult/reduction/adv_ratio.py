@@ -91,7 +91,7 @@ perturbed_test_samples = np.array(perturbed_test_samples)
 
 
 
-filename = f'outcome/perturbed_loss{expt}.npy'
+filename = f'outcome/perturbed_ratio.npy'
 
 
 np.save(filename, perturbed_test_samples)
