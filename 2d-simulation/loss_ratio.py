@@ -10,8 +10,8 @@ def linear_classifier(theta):
     theta = tf.reshape(theta, (-1, 1))
     def classifier(x):
         logits = x @ theta
-        probs = tf.exp(logits) / (1 + tf.exp(logits))
-        return tf.concat([probs, 1-probs], axis= 1)
+        probs = 1 / (1 + tf.exp(-logits))
+        return tf.concat([1-probs, probs], axis= 1)
     return classifier
 
 
@@ -90,6 +90,7 @@ def mean_ratio(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num
              learning_rate=learning_rate, num_steps=num_steps)
 
         ratios.append(r)
+    print(f'Done for mean ratio of {theta}')
     return np.mean(ratios)
 
 
@@ -108,6 +109,7 @@ def mean_ratio_l2_base(theta, fair_direction, regularizer = 1, learning_rate = 5
              learning_rate=learning_rate, num_steps=num_steps)
 
         ratios.append(r)
+    print(f'Done for mean ratio l2 base of {theta}')
     return np.mean(ratios)
 
 
@@ -119,12 +121,13 @@ theta = [list(i) for i in thetas]
 fair_direction = [0, 1]
 
 cpus = mp.cpu_count()
+print(f'Number of cpus {cpus}')
 with mp.Pool(cpus) as pool:
     mean_ratio_theta = pool.map(partial(mean_ratio, fair_direction = fair_direction, regularizer = 1,\
-        learning_rate = 5e-2, num_steps = 200), theta)
+        learning_rate = 5e-2, num_steps = 100), theta)
 
     mean_ratio_theta_l2_base = pool.map(partial(mean_ratio_l2_base, fair_direction = fair_direction, regularizer = 1,\
-        learning_rate = 5e-2, num_steps = 200), theta)
+        learning_rate = 5e-2, num_steps = 100), theta)
 
 np.save('data/mean_ratio_theta_fair.npy', np.array(mean_ratio_theta))
 np.save('data/mean_ratio_theta_l2_base_fair.npy', np.array(mean_ratio_theta_l2_base))
