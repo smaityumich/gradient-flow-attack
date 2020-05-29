@@ -142,7 +142,7 @@ thetas = itertools.product(theta1, theta2)
 theta = [list(i) for i in thetas]
 
 ang = int(float(sys.argv[1]))
-angle = np.degrees(ang)
+angle = np.radians(ang)
 c, s = np.cos(angle), np.sin(angle)
 R = np.array(((c, -s), (s, c)))
 fair_direction = np.array([[0], [1]])

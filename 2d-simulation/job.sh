@@ -8,4 +8,4 @@
 #SBATCH --mail-type=NONE
 #SBATCH --mail-user=smaity@umich.edu
 #SBATCH --partition=standard
-python3 loss_ratio.py 10
+python3 loss_ratio.py 5
