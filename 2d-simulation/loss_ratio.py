@@ -16,18 +16,21 @@ def linear_classifier(theta):
 
 
 def fair_metric_fn(theta):
+    
     theta = tf.cast(theta, dtype = tf.float32)
     theta = tf.reshape(theta, (-1, 1))
     def fair_metric(x):
         return tf.norm(x @ theta, axis = 1)
     return fair_metric
 
-def sample_perturbation(data, classifier, fair_metric, regularizer = 5, learning_rate = 2e-2, num_steps = 200):
+def sample_perturbation(data, theta, fair_direction, regularizer = 5, learning_rate = 2e-2, num_steps = 200):
     x, y = data
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
     x_start = x
     x_fair = x
+    classifier = linear_classifier(theta)
+    fair_metric = fair_metric_fn(fair_direction)
 
     #x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*1e-9
     for i in range(num_steps):
@@ -49,8 +52,10 @@ def sample_perturbation(data, classifier, fair_metric, regularizer = 5, learning
     return ratio.numpy()
 
 
-def sample_perturbation_l2_base(data, classifier, fair_metric, regularizer = 5, learning_rate = 2e-2, num_steps = 200):
+def sample_perturbation_l2_base(data, theta, fair_direction, regularizer = 5, learning_rate = 2e-2, num_steps = 200):
     x, y = data
+    classifier = linear_classifier(theta)
+    fair_metric = fair_metric_fn(fair_direction)
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
     x_start = x
@@ -100,15 +105,12 @@ def mean_ratio(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num
     x, y = np.load('data/x.npy'), np.load('data/y.npy')
     x, y = tf.cast(x, dtype = tf.float32), y.astype('int32')
     y = tf.one_hot(y, 2)
-
-    cl = linear_classifier(theta)
-    while np.linalg.norm(fair_direction) != 1:
-        fair_direction = fair_direction / np.linalg.norm(fair_direction)
-    fair_metric = fair_metric_fn(fair_direction)
+    while np.linalg.norm(theta) != 1:
+        theta = theta/np.linalg.norm(theta)
     
     cpus = mp.cpu_count()
     with mp.Pool(cpus) as pool:
-        ratios = pool.map(partial(sample_perturbation, classifier = cl, fair_metric = fair_metric,\
+        ratios = pool.map(partial(sample_perturbation, theta = theta, fair_direction = fair_direction,\
             regularizer = regularizer, learning_rate = learning_rate, num_steps = num_steps), zip(x, y))
     print(f'Done for mean ratio of {theta}')
     return np.mean(ratios)
@@ -118,14 +120,12 @@ def mean_ratio_l2_base(theta, fair_direction, regularizer = 1, learning_rate = 5
     x, y = np.load('data/x.npy'), np.load('data/y.npy')
     x, y = tf.cast(x, dtype = tf.float32), y.astype('int32')
     y = tf.one_hot(y, 2)
+    while np.linalg.norm(theta) != 1:
+        theta = theta/np.linalg.norm(theta)
 
-    cl = linear_classifier(theta)
-    while np.linalg.norm(fair_direction) != 1:
-        fair_direction = fair_direction / np.linalg.norm(fair_direction)
-    fair_metric = fair_metric_fn(fair_direction)
     cpus = mp.cpu_count()
     with mp.Pool(cpus) as pool:
-        ratios = pool.map(partial(sample_perturbation_l2_base, classifier = cl, fair_metric = fair_metric,\
+        ratios = pool.map(partial(sample_perturbation_l2_base, theta = theta, fair_direction = fair_direction,\
             regularizer = regularizer, learning_rate = learning_rate, num_steps = num_steps), zip(x, y))
     print(f'Done for mean ratio l2 base of {theta}')
     return np.mean(ratios)
