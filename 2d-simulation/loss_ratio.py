@@ -5,6 +5,7 @@ import itertools
 import multiprocessing as mp
 from functools import partial
 import sys
+import random
 
 def linear_classifier(theta):
     theta = tf.cast(theta, dtype = tf.float32)
@@ -104,6 +105,19 @@ def sample_perturbation_l2_base(data, theta, fair_direction, regularizer = 5, le
     
     return ratio.numpy()
 
+def ratio_mean(x, sub_sample = 100):
+    n = x.shape[0]
+    index = np.random.randint(n, size = (100,))
+    srswr_ratio=[x[i] for i in index]
+    return np.mean(srswr_ratio)
+
+def upper_ci(x, sub_sample = 100):
+    sample_size = 1000
+    ratio_means = [ratio_mean(x, sub_sample=sub_sample) for _ in range(sample_size)]
+    ratio_means = np.array(ratio_means)
+    return np.mean(ratio_means) + 1.96 * np.std(ratio_means)/np.sqrt(sample_size)
+
+
 
 
 def mean_ratio(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num_steps = 200):
@@ -118,22 +132,23 @@ def mean_ratio(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num
     print(f'Done for mean ratio of {theta}')
     ratios = np.array(ratios)
     ratios = ratios[np.isfinite(ratios)]
-    return np.mean(ratios)
+
+    return upper_ci(ratios)#np.mean(ratios)
 
 
-def mean_ratio_l2_base(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num_steps = 200):
-    x, y = np.load('data/x.npy'), np.load('data/y.npy')
-    x, y = tf.cast(x, dtype = tf.float32), y.astype('int32')
-    y = tf.one_hot(y, 2)
+# def mean_ratio_l2_base(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num_steps = 200):
+#     x, y = np.load('data/x.npy'), np.load('data/y.npy')
+#     x, y = tf.cast(x, dtype = tf.float32), y.astype('int32')
+#     y = tf.one_hot(y, 2)
 
-    cpus = mp.cpu_count()
-    with mp.Pool(cpus) as pool:
-        ratios = pool.map(partial(sample_perturbation_l2_base, theta = theta, fair_direction = fair_direction,\
-            regularizer = regularizer, learning_rate = learning_rate, num_steps = num_steps), zip(x, y))
-    print(f'Done for mean ratio l2 base of {theta}')
-    ratios = np.array(ratios)
-    ratios = ratios[np.isfinite(ratios)]
-    return np.mean(ratios)
+#     cpus = mp.cpu_count()
+    # with mp.Pool(cpus) as pool:
+    #     ratios = pool.map(partial(sample_perturbation_l2_base, theta = theta, fair_direction = fair_direction,\
+    #         regularizer = regularizer, learning_rate = learning_rate, num_steps = num_steps), zip(x, y))
+    # print(f'Done for mean ratio l2 base of {theta}')
+    # ratios = np.array(ratios)
+    # ratios = ratios[np.isfinite(ratios)]
+    # return np.mean(ratios)
 
 
 theta1 = np.arange(0, 4.1, step = 0.2)
@@ -152,20 +167,20 @@ while np.linalg.norm(fair_direction) != 1:
 
 
 mean_ratio_theta = []
-mean_ratio_theta_l2_base = []
+#mean_ratio_theta_l2_base = []
 for t1 in theta1:
     mean_ratio_theta_row = []
-    mean_ratio_theta_l2_base_row = []
+    #mean_ratio_theta_l2_base_row = []
     for t2 in theta2:
-        r = mean_ratio([t1, t2], fair_direction, regularizer= 2, learning_rate=2e-2, num_steps=100)
+        r = mean_ratio([t1, t2], fair_direction, regularizer= 100, learning_rate=2e-2, num_steps=100)
         mean_ratio_theta_row.append(r)
-        r = mean_ratio_l2_base([t1, t2], fair_direction, regularizer= 2, learning_rate=2e-2, num_steps=100)
-        mean_ratio_theta_l2_base_row.append(r)
+        #r = mean_ratio_l2_base([t1, t2], fair_direction, regularizer= 2, learning_rate=2e-2, num_steps=100)
+        #mean_ratio_theta_l2_base_row.append(r)
     mean_ratio_theta.append(mean_ratio_theta_row)
-    mean_ratio_theta_l2_base.append(mean_ratio_theta_l2_base_row)
+    #mean_ratio_theta_l2_base.append(mean_ratio_theta_l2_base_row)
 
 
 
 
-np.save(f'data/mean_ratio_{ang}.npy', np.array(mean_ratio_theta))
-np.save(f'data/mean_ratio_l2_{ang}.npy', np.array(mean_ratio_theta_l2_base))
+np.save(f'data/test_stat_{ang}.npy', np.array(mean_ratio_theta))
+#np.save(f'data/mean_ratio_l2_{ang}.npy', np.array(mean_ratio_theta_l2_base))

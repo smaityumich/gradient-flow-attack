@@ -35,9 +35,9 @@ y_train, y_test = dataset_orig_train.labels.reshape((-1,)), dataset_orig_test.la
 
 sensetive_directions = []
 protected_regression = linear_model.LogisticRegression(fit_intercept = True)
-protected_regression.fit(x_unprotected_train, x_protected_train[:, 0])
+protected_regression.fit(x_unprotected_test, x_protected_test[:, 0])
 sensetive_directions.append(protected_regression.coef_.reshape((-1,)))
-protected_regression.fit(x_unprotected_train, x_protected_train[:, 1])
+protected_regression.fit(x_unprotected_test, x_protected_test[:, 1])
 sensetive_directions.append(protected_regression.coef_.reshape((-1,)))
 sensetive_directions = np.array(sensetive_directions)
 
@@ -68,7 +68,7 @@ sensetive_directions = tf.cast(sensetive_directions, dtype = tf.float32)
 
 graph = model.model                   
 
-def sample_perturbation(data_point, regularizer = 5, learning_rate = 5e-2, num_steps = 200):
+def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num_steps = 200):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))

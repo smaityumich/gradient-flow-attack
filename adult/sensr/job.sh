@@ -9,4 +9,3 @@
 #SBATCH --mail-user=smaity@umich.edu
 #SBATCH --partition=standard
 python3 adv_ratio.py
-python3 adv_ratio_l2.py
