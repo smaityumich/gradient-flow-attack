@@ -119,6 +119,7 @@ theta = [list(i) for i in thetas]
 fair_direction = [0, 1]
 
 cpus = mp.cpu_count()
+print(f'number of cpus {cpus}')
 with mp.Pool(cpus) as pool:
     mean_ratio_theta = pool.map(partial(mean_ratio, fair_direction = fair_direction, regularizer = 1,\
         learning_rate = 5e-2, num_steps = 200), theta)
