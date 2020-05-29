@@ -42,7 +42,7 @@ def sample_perturbation(data, theta, fair_direction, regularizer = 5, learning_r
         gradient = g.gradient(loss, x_fair)
     
         if not tf.reduce_all(tf.math.is_finite(loss)):
-            x_fair = x_fair0
+            x_fair = x_fair0 - learning_rate * gradient
             break
         else:
             x_fair0, x_fair = x_fair, x_fair + learning_rate * gradient
@@ -70,7 +70,7 @@ def sample_perturbation_l2_base(data, theta, fair_direction, regularizer = 5, le
         gradient = g.gradient(loss, x_fair)
         
         if not tf.reduce_all(tf.math.is_finite(loss)):
-            x_fair = x_fair0
+            x_fair = x_fair0 - learning_rate * gradient
             break
         else:
             x_fair0, x_fair = x_fair, x_fair + learning_rate * gradient
