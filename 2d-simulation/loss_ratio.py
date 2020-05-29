@@ -4,6 +4,7 @@ import utils
 import itertools
 import multiprocessing as mp
 from functools import partial
+import sys
 
 def linear_classifier(theta):
     theta = tf.cast(theta, dtype = tf.float32)
@@ -18,7 +19,7 @@ def linear_classifier(theta):
 def fair_metric_fn(theta):
     
     theta = tf.cast(theta, dtype = tf.float32)
-    theta = tf.reshape(theta, (-1, 1))
+    #theta = tf.reshape(theta, (-1, 1))
     def fair_metric(x):
         return tf.norm(x @ theta, axis = 1)
     return fair_metric
@@ -135,12 +136,17 @@ def mean_ratio_l2_base(theta, fair_direction, regularizer = 1, learning_rate = 5
     return np.mean(ratios)
 
 
-theta1 = np.arange(0, 4.3, step = 0.4)
-theta2 = np.arange(0, 4.3, step= 0.4)
+theta1 = np.arange(0, 4.1, step = 0.2)
+theta2 = np.arange(0, 4.1, step= 0.2)
 thetas = itertools.product(theta1, theta2)
 theta = [list(i) for i in thetas]
 
-fair_direction = [0, 1]
+ang = int(float(sys.argv[1]))
+angle = np.radians(ang)
+c, s = np.cos(angle), np.sin(angle)
+R = np.array(((c, -s), (s, c)))
+fair_direction = np.arrar([[0], [1]])
+fair_direction = R @ fair_direction
 while np.linalg.norm(fair_direction) != 1:
     fair_direction = fair_direction/np.linalg.norm(fair_direction)
 
@@ -161,5 +167,5 @@ for t1 in theta1:
 
 
 
-np.save('data/mean_ratio.npy', np.array(mean_ratio_theta))
-np.save('data/mean_ratio_l2.npy', np.array(mean_ratio_theta_l2_base))
+np.save(f'data/mean_ratio_{ang}.npy', np.array(mean_ratio_theta))
+np.save(f'data/mean_ratio_l2_{ang}.npy', np.array(mean_ratio_theta_l2_base))
