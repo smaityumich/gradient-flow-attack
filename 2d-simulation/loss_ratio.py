@@ -31,7 +31,7 @@ def sample_perturbation(data, theta, fair_direction, regularizer = 5, learning_r
     x_fair = x
     classifier = linear_classifier(theta)
     fair_metric = fair_metric_fn(fair_direction)
-
+    gradient0 = x_start
     #x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*1e-9
     for _ in range(num_steps):
         with tf.GradientTape() as g:
@@ -39,13 +39,13 @@ def sample_perturbation(data, theta, fair_direction, regularizer = 5, learning_r
             prob = classifier(x_fair)
             loss = utils.EntropyLoss(y, prob)  - regularizer * tf.reduce_sum(fair_metric(x_fair - x_start)**2)
         
-        gradient = g.gradient(loss, x_fair)
+        gradient0, gradient = gradient, g.gradient(loss, x_fair)
     
         if not tf.reduce_all(tf.math.is_finite(loss)):
-            x_fair = x_fair0 - learning_rate * gradient
+            x_fair = x_fair - learning_rate * gradient0
             break
         else:
-            x_fair0, x_fair = x_fair, x_fair + learning_rate * gradient
+            x_fair = x_fair + learning_rate * gradient
 
     ratio = utils.EntropyLoss(y, classifier(x_fair)) / utils.EntropyLoss(y, classifier(x_start))
     return ratio.numpy()
@@ -60,6 +60,7 @@ def sample_perturbation_l2_base(data, theta, fair_direction, regularizer = 5, le
     x_start = x
     x_fair = x
     x_base = x
+    gradient0 = x_start
     #x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*1e-9
     for _ in range(num_steps):
         with tf.GradientTape() as g:
@@ -67,13 +68,13 @@ def sample_perturbation_l2_base(data, theta, fair_direction, regularizer = 5, le
             prob = classifier(x_fair)
             loss = utils.EntropyLoss(y, prob)  - regularizer * tf.reduce_sum(fair_metric(x_fair - x_start)**2)
 
-        gradient = g.gradient(loss, x_fair)
+        gradient0, gradient = gradient, g.gradient(loss, x_fair)
         
         if not tf.reduce_all(tf.math.is_finite(loss)):
-            x_fair = x_fair0 - learning_rate * gradient
+            x_fair = x_fair - learning_rate * gradient0
             break
         else:
-            x_fair0, x_fair = x_fair, x_fair + learning_rate * gradient
+            x_fair = x_fair + learning_rate * gradient
 
     for _ in range(num_steps):
         with tf.GradientTape() as g:
