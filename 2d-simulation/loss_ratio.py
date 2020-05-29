@@ -105,8 +105,6 @@ def mean_ratio(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num
     x, y = np.load('data/x.npy'), np.load('data/y.npy')
     x, y = tf.cast(x, dtype = tf.float32), y.astype('int32')
     y = tf.one_hot(y, 2)
-    while np.linalg.norm(theta) != 1:
-        theta = theta/np.linalg.norm(theta)
     
     cpus = mp.cpu_count()
     with mp.Pool(cpus) as pool:
@@ -120,8 +118,6 @@ def mean_ratio_l2_base(theta, fair_direction, regularizer = 1, learning_rate = 5
     x, y = np.load('data/x.npy'), np.load('data/y.npy')
     x, y = tf.cast(x, dtype = tf.float32), y.astype('int32')
     y = tf.one_hot(y, 2)
-    while np.linalg.norm(theta) != 1:
-        theta = theta/np.linalg.norm(theta)
 
     cpus = mp.cpu_count()
     with mp.Pool(cpus) as pool:
@@ -137,7 +133,8 @@ thetas = itertools.product(theta1, theta2)
 theta = [list(i) for i in thetas]
 
 fair_direction = [0, 1]
-
+while np.linalg.norm(fair_direction) != 1:
+    fair_direction = fair_direction/np.linalg.norm(fair_direction)
 
 
 mean_ratio_theta = []
