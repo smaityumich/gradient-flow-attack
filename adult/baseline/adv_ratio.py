@@ -2,7 +2,6 @@ import numpy as np
 import tensorflow as tf
 from adult_modified import preprocess_adult_data
 from sklearn import linear_model
-import model
 import utils
 import time
 import multiprocessing as mp
@@ -91,7 +90,7 @@ def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num
 
 
 
-cpus = mp.cpu_count()
+cpus = 20#mp.cpu_count()
 print(f'Number of cpus : {cpus}')
 start_time = time.time()
 with mp.Pool(cpus) as pool:
