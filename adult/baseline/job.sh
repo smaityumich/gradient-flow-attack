@@ -8,5 +8,4 @@
 #SBATCH --mail-type=NONE
 #SBATCH --mail-user=smaity@umich.edu
 #SBATCH --partition=standard
-python3 adversarial_sample.py
-python3 adversarial_sample_fair.py
+python3 adv_ratio.py
