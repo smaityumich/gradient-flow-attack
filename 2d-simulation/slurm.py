@@ -6,7 +6,7 @@ import itertools
 job_file = 'submit.sbat'
 
 # Experiment 1
-ang = [0, 5, 10, 20]
+ang = [0, 10, 20]
 
 
 #os.system('touch summary/adult7.out')
