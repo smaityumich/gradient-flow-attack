@@ -115,7 +115,7 @@ def upper_ci(x, sub_sample = 100):
     sample_size = 1000
     ratio_means = [ratio_mean(x, sub_sample=sub_sample) for _ in range(sample_size)]
     ratio_means = np.array(ratio_means)
-    return np.mean(ratio_means) + 1.96 * np.std(ratio_means)/np.sqrt(sample_size)
+    return np.mean(ratio_means) - 1.96 * np.std(ratio_means)/np.sqrt(sample_size)
 
 
 
