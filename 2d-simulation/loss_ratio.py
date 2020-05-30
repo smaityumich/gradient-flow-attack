@@ -8,12 +8,14 @@ import sys
 import random
 
 def linear_classifier(theta):
-    theta = tf.cast(theta, dtype = tf.float32)
-    theta = tf.reshape(theta, (-1, 1))
+    theta = np.array(theta)
+    #theta = theta/(np.linalg.norm(theta) + 1e-16)
     def classifier(x):
-        logits = x @ theta
-        probs = 1 / (1 + tf.exp(-logits))
-        return tf.concat([1-probs, probs], axis= 1)
+        logits = np.sum(x * theta)
+        if logits < 0:
+            logits = np.log(np.exp(logits) + 1e-16)
+        prob = 1 / (1 + np.exp(-logits))
+        return prob
     return classifier
 
 
@@ -25,35 +27,25 @@ def fair_metric_fn(theta):
         return tf.norm(x @ theta, axis = 1)
     return fair_metric
 
+def get_gradient(x, x_start, y,  theta, classifier, fair_direction, regularizer):
+    prob = classifier(x)
+    scalar = - 2 * regularizer * np.sum(fair_direction * (x - x_start))
+    return (prob - y) * theta + scalar * fair_direction
+
 def sample_perturbation(data, theta, fair_direction, regularizer = 5, learning_rate = 2e-2, num_steps = 200):
     x, y = data
-    x = tf.reshape(x, (1, -1))
-    y = tf.reshape(y, (1, -1))
     x_start = x
     x_fair = x
     classifier = linear_classifier(theta)
-    fair_metric = fair_metric_fn(fair_direction)
-    gradient0 = x_start
+    fair_direction = np.array(fair_direction)
+    theta = np.array(theta)
     #x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*1e-9
-    for i in range(num_steps):
-        with tf.GradientTape() as g:
-            g.watch(x_fair)
-            prob = classifier(x_fair)
-            loss = utils.EntropyLoss(y, prob)  - regularizer * tf.reduce_sum(fair_metric(x_fair - x_start)**2)
+    for _ in range(num_steps):
+        gradient = get_gradient(x_fair, x_start, y, theta,  classifier, fair_direction, regularizer)
+        x_fair = x_fair + learning_rate * gradient
 
-        if i == 0:
-            gradient = g.gradient(loss, x_fair)
-        else:
-            gradient0, gradient = gradient, g.gradient(loss, x_fair)
-    
-        if not tf.reduce_all(tf.math.is_finite(loss)):
-            x_fair = x_fair - learning_rate * gradient0
-            break
-        else:
-            x_fair = x_fair + learning_rate * gradient
-
-    ratio = utils.EntropyLoss(y, classifier(x_fair)) / utils.EntropyLoss(y, classifier(x_start))
-    return ratio.numpy()
+    ratio = utils.entropy(y, classifier(x_fair)) / utils.entropy(y, classifier(x_start))
+    return ratio
 
 
 def sample_perturbation_l2_base(data, theta, fair_direction, regularizer = 5, learning_rate = 2e-2, num_steps = 200):
@@ -112,7 +104,7 @@ def ratio_mean(x, sub_sample = 100):
     return np.mean(srswr_ratio)
 
 def upper_ci(x, sub_sample = 100):
-    sample_size = 1000
+    sample_size = 400
     ratio_means = [ratio_mean(x, sub_sample=sub_sample) for _ in range(sample_size)]
     ratio_means = np.array(ratio_means)
     return np.mean(ratio_means) - 1.96 * np.std(ratio_means)/np.sqrt(sample_size)
@@ -122,18 +114,20 @@ def upper_ci(x, sub_sample = 100):
 
 def mean_ratio(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num_steps = 200):
     x, y = np.load('data/x.npy'), np.load('data/y.npy')
-    x, y = tf.cast(x, dtype = tf.float32), y.astype('int32')
-    y = tf.one_hot(y, 2)
+    
     
     cpus = mp.cpu_count()
     with mp.Pool(cpus) as pool:
         ratios = pool.map(partial(sample_perturbation, theta = theta, fair_direction = fair_direction,\
             regularizer = regularizer, learning_rate = learning_rate, num_steps = num_steps), zip(x, y))
-    print(f'Done for mean ratio of {theta}')
+    
     ratios = np.array(ratios)
     ratios = ratios[np.isfinite(ratios)]
-
-    return upper_ci(ratios)#np.mean(ratios)
+    n = ratios.shape[0]
+    mean = np.mean(ratios)
+    std = np.std(ratios)
+    print(f'Done for mean ratio of {theta} with mean, std, n {mean} {std} {n}')
+    return mean - 1.96 * std/np.sqrt(n)#np.mean(ratios)
 
 
 # def mean_ratio_l2_base(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num_steps = 200):
@@ -151,8 +145,8 @@ def mean_ratio(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num
     # return np.mean(ratios)
 
 
-theta1 = np.arange(0, 4.1, step = 0.2)
-theta2 = np.arange(0, 4.1, step= 0.2)
+theta1 = np.arange(0, 6.1, step = 0.4)
+theta2 = np.arange(0, 4.1, step= 0.4)
 thetas = itertools.product(theta1, theta2)
 theta = [list(i) for i in thetas]
 
@@ -172,7 +166,7 @@ for t1 in theta1:
     mean_ratio_theta_row = []
     #mean_ratio_theta_l2_base_row = []
     for t2 in theta2:
-        r = mean_ratio([t1, t2], fair_direction, regularizer= 1e3, learning_rate=5e-3, num_steps=100)
+        r = mean_ratio([t1, t2], fair_direction, regularizer= 5e1, learning_rate=4e-3, num_steps=40)
         mean_ratio_theta_row.append(r)
         #r = mean_ratio_l2_base([t1, t2], fair_direction, regularizer= 2, learning_rate=2e-2, num_steps=100)
         #mean_ratio_theta_l2_base_row.append(r)

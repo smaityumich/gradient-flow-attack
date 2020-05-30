@@ -1,6 +1,6 @@
 import numpy as np
 
-def get_data(minority_group_prop = 0.2, sample_size = 200, seed = 1):
+def get_data(minority_group_prop = 0.2, sample_size = 400, seed = 1):
 
     
     mu_minority = np.array([1.5, 0])
@@ -21,3 +21,5 @@ def get_data(minority_group_prop = 0.2, sample_size = 200, seed = 1):
     y[~z] = np.sign(np.dot(x[~z,:],w_minority) - np.dot(w_minority,mu_minority) + noise[~z])
     np.save('data/x.npy', x)
     np.save('data/y.npy', (y+1)/2)
+
+get_data()

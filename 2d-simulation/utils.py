@@ -80,5 +80,7 @@ def unprotected_direction(x, sensetive_directions):
     return x
 
 
-
+def entropy(y, p):
+    a = p if y else 1-p
+    return -np.log(a+1e-16)
 
