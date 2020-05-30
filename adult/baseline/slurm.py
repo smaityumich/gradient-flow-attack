@@ -35,3 +35,4 @@ for s, e in zip(start, end):
 
     os.system("sbatch %s" %job_file)
     os.system(f'rm {job_file}')
+#os.system('python3 np_joiner.py')

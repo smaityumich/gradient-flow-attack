@@ -10,7 +10,7 @@ end[-1] = 9045
 
 
 for s, e in zip(start, end):
-    filename = f'outcome/perturbed_ratio_{start}_{end}.npy'
+    filename = f'outcome/perturbed_ratio_{s}_{e}.npy'
     ratio_part = np.load(filename)
     ratios.append(ratio_part)
 
