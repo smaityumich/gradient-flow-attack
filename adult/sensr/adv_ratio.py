@@ -10,6 +10,7 @@ import random
 import matplotlib.pyplot as plt
 import scipy
 plt.ioff()
+import sys
 
 
 seed = 1
@@ -91,17 +92,20 @@ def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num
 
 
 
-cpus = mp.cpu_count()
-print(f'Number of cpus : {cpus}')
-start_time = time.time()
-with mp.Pool(cpus) as pool:
-    perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
-end_time = time.time()
+#cpus = mp.cpu_count()
+#print(f'Number of cpus : {cpus}')
+start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
+perturbed_test_samples = []
+for data in zip(x_unprotected_test[start:end], y_test[start:end]):
+     perturbed_test_samples.append(sample_perturbation(data, regularizer=20, learning_rate=3e-2, num_steps=200))
+# with mp.Pool(cpus) as pool:
+#     perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
+# end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)
 
 
 
-filename = f'outcome/perturbed_ratio.npy'
+filename = f'outcome/perturbed_ratio_{start}_{end}.npy'
 
 
 np.save(filename, perturbed_test_samples)
@@ -110,5 +114,6 @@ np.save(filename, perturbed_test_samples)
 #output = graph.call(input)
 #model = tf.keras.Model(inputs=input, outputs=output)
 #tf.keras.utils.plot_model(model, to_file = imagename, show_shapes=True)
+
 
 
