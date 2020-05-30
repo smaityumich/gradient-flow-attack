@@ -21,7 +21,7 @@ for a in ang:
         fh.writelines("#!/bin/bash\n")
         fh.writelines(f"#SBATCH --job-name=adult.job\n")
         fh.writelines('#SBATCH --nodes=1\n')
-        fh.writelines('#SBATCH --cpus-per-task=1\n')
+        fh.writelines('#SBATCH --cpus-per-task=20\n')
         fh.writelines('#SBATCH --mem-per-cpu=2gb\n')
         fh.writelines("#SBATCH --time=03:00:00\n")
         fh.writelines("#SBATCH --account=yuekai1\n")
