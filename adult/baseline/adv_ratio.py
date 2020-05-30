@@ -67,7 +67,7 @@ sensetive_directions = tf.cast(sensetive_directions, dtype = tf.float32)
 
 graph = tf.keras.models.load_model('graph')               
 
-def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num_steps = 200):
+def sample_perturbation(data_point, regularizer = 20, learning_rate = 3e-2, num_steps = 200):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
