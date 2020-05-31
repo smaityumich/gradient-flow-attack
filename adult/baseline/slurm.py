@@ -26,7 +26,7 @@ for s, e in zip(start, end):
         fh.writelines('#SBATCH --cpus-per-task=1\n')
         fh.writelines('#SBATCH --mem-per-cpu=2gb\n')
         fh.writelines("#SBATCH --time=03:00:00\n")
-        fh.writelines("#SBATCH --account=yuekai1\n")
+        fh.writelines("#SBATCH --account=stats_dept1\n")
         fh.writelines("#SBATCH --mail-type=NONE\n")
         fh.writelines("#SBATCH --mail-user=smaity@umich.edu\n")
         fh.writelines('#SBATCH --partition=standard\n')

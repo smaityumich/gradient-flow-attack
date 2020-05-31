@@ -97,7 +97,7 @@ def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num
 start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
 perturbed_test_samples = []
 for data in zip(x_unprotected_test[start:end], y_test[start:end]):
-     perturbed_test_samples.append(sample_perturbation(data, regularizer=20, learning_rate=3e-2, num_steps=200))
+     perturbed_test_samples.append(sample_perturbation(data, regularizer=50, learning_rate=4e-4, num_steps=200))
 # with mp.Pool(cpus) as pool:
 #     perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
 # end_time = time.time()
