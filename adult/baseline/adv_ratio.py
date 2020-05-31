@@ -78,7 +78,7 @@ def sample_perturbation(data_point, regularizer = 20, learning_rate = 3e-2, num_
             g.watch(x)
             prob = graph(x)
             perturb = utils.unprotected_direction(x-x_start, sensetive_directions)
-            loss = utils.EntropyLoss(y, prob)  - regularizer / ((i + 1) ** (2/3)) * tf.norm(perturb)**2
+            loss = utils.EntropyLoss(y, prob)  - regularizer / ((0 + 1) ** (2/3)) * tf.norm(perturb)**2
 
         gradient = g.gradient(loss, x)
         x = x + learning_rate * gradient#utils.protected_direction(gradient, sensetive_directions)
@@ -90,14 +90,14 @@ def sample_perturbation(data_point, regularizer = 20, learning_rate = 3e-2, num_
 
 
 
-#cpus = mp.cpu_count()
+cpus = mp.cpu_count()
 #print(f'Number of cpus : {cpus}')
 start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
 perturbed_test_samples = []
-for data in zip(x_unprotected_test[start:end], y_test[start:end]):
-     perturbed_test_samples.append(sample_perturbation(data, regularizer=200, learning_rate=4e-3, num_steps=500))
-# with mp.Pool(cpus) as pool:
-#     perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
+#for data in zip(x_unprotected_test[start:end], y_test[start:end]):
+#     perturbed_test_samples.append(sample_perturbation(data, regularizer=200, learning_rate=4e-3, num_steps=500))
+with mp.Pool(cpus) as pool:
+     perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
 # end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)
 
