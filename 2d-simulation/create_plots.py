@@ -52,9 +52,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
-div_norm = colors.DivergingNorm(vmin=0.9, vcenter=1.25, vmax=1.5)
-theta1 = np.arange(0, 8.1, step = 0.5)
-theta2 = np.arange(0, 5.1, step= 0.5)
+div_norm = colors.DivergingNorm(vmin=0.9, vcenter=1.25, vmax=3)
+theta1 = np.arange(0, 4.1, step = 1)
+theta2 = np.arange(0, 4.1, step= 1)
 T2, T1 = np.meshgrid(theta2, theta1)
 
 fig, ax = plt.subplots(nrows = 1, ncols = 3, figsize = [15, 5])

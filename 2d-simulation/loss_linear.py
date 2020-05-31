@@ -69,17 +69,18 @@ def get_gradient(x, x_start, y,  theta, classifier, fair_direction, regularizer)
     return (prob - y) * theta + scalar * fair_direction
 
 def sample_perturbation(data, theta, bias, fair_direction, regularizer = 5, learning_rate = 2e-2, num_steps = 200):
+    global orth_fair
     x, y = data
     x_start = x
     x_fair = x
     classifier = linear_classifier(theta, bias)
     fair_direction = np.array(fair_direction)
     theta = np.array(theta)
-    regularizer = regularizer * np.exp(theta[1])
+    #regularizer = regularizer * np.exp(theta[1])
     #x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*1e-9
-    for _ in range(num_steps):
+    for i in range(num_steps):
         gradient = get_gradient(x_fair, x_start, y, theta,  classifier, fair_direction, regularizer)
-        x_fair = x_fair + learning_rate * gradient#np.sum(gradient * np.array([1, 0])) * np.array([1, 0])
+        x_fair = x_fair + learning_rate/((i+1) ** (2/3)) * gradient#np.sum(gradient * orth_fair) * orth_fair
 
     ratio = utils.entropy(y, classifier(x_fair)) / utils.entropy(y, classifier(x_start))
     return ratio
@@ -182,10 +183,10 @@ def mean_ratio(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num
     # return np.mean(ratios)
 
 
-#theta1 = np.arange(0, 8.1, step = 0.5)
-#theta2 = np.arange(0, 5.1, step= 0.5)
-theta1 = np.array([0, 1, 3])
-theta2 = np.array([0, 1, 3])
+theta1 = np.arange(0, 4.1, step = 0.2)
+theta2 = np.arange(0, 4.1, step = 0.2)
+#theta1 = np.array([0, 1, 3])
+#theta2 = np.array([0, 1, 3])
 thetas = itertools.product(theta1, theta2)
 theta = [list(i) for i in thetas]
 
@@ -197,7 +198,8 @@ fair_direction = np.array([[0], [1]])
 fair_direction = R @ fair_direction
 while np.linalg.norm(fair_direction) != 1:
     fair_direction = fair_direction/np.linalg.norm(fair_direction)
-
+fair_direction = fair_direction.reshape((-1,))
+orth_fair = np.array([fair_direction[1], -fair_direction[0]])
 
 mean_ratio_theta = []
 #mean_ratio_theta_l2_base = []
@@ -205,7 +207,7 @@ for t1 in theta1:
     mean_ratio_theta_row = []
     #mean_ratio_theta_l2_base_row = []
     for t2 in theta2:
-        r = mean_ratio([t1, t2], fair_direction, regularizer= 5, learning_rate=3e-3, num_steps=100)
+        r = mean_ratio([t1, t2], fair_direction, regularizer= 100, learning_rate=2e-2, num_steps=1000)
         mean_ratio_theta_row.append(r)
         #r = mean_ratio_l2_base([t1, t2], fair_direction, regularizer= 2, learning_rate=2e-2, num_steps=100)
         #mean_ratio_theta_l2_base_row.append(r)
@@ -215,5 +217,5 @@ for t1 in theta1:
 
 
 
-#np.save(f'data/test_stat_{ang}.npy', np.array(mean_ratio_theta))
+np.save(f'data/test_stat_{ang}.npy', np.array(mean_ratio_theta))
 #np.save(f'data/mean_ratio_l2_{ang}.npy', np.array(mean_ratio_theta_l2_base))

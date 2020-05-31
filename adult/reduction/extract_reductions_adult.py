@@ -9,6 +9,8 @@ constraints = {'TPRD': TruePositiveRateDifference,
                'DP': DemographicParity,
                'EO': EqualizedOdds}
 
+import json
+
 # Adult data processing
 seed = 17
 dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
@@ -26,10 +28,10 @@ group_train_cross = group_train[:,0] + group_train[:,1]*2
 group_test_cross = group_test[:,0] + group_test[:,1]*2
 
 ## Train reductions
-eps = 0.01
+eps = 0.05
 c = 'EO'
 constraint = constraints[c]()
-classifier = LogisticRegression(solver='liblinear', fit_intercept=True)
+classifier = LogisticRegression(solver='liblinear', fit_intercept=True, class_weight='balanced')
 mitigator = ExponentiatedGradient(classifier, constraint, eps=eps)
 mitigator.fit(x_train, y_train, sensitive_features=group_train_cross)
 y_pred_mitigated = mitigator.predict(x_test)
@@ -46,3 +48,11 @@ for t, w_t in enumerate(mitigator._weights.index):
         coefs.append(mitigator._predictors[t].coef_.flatten())
         intercepts.append(mitigator._predictors[t].intercept_[0])
         ens_weights.append(mitigator._weights[w_t])
+
+ens_weight = [e.tolist() for e in ens_weights]
+coef = [c.tolist() for c in coefs]
+intercept = [i.tolist() for i in intercepts]
+
+data = {'ens_weights': ens_weight, 'coefs': coef, 'intercepts': intercept}
+with open('data.txt', 'w') as f:
+    json.dump(data, f)
