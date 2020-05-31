@@ -75,12 +75,12 @@ def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num
     y = tf.reshape(y, (1, -1))
     x_start = x
     #x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*1e-9
-    for _ in range(num_steps):
+    for i in range(num_steps):
         with tf.GradientTape() as g:
             g.watch(x)
             prob = graph(x)
             perturb = utils.unprotected_direction(x-x_start, sensetive_directions)
-            loss = utils.EntropyLoss(y, prob)  - regularizer * tf.norm(perturb)**2
+            loss = utils.EntropyLoss(y, prob)  - regularizer / ((i + 1) ** (2/3)) * tf.norm(perturb)**2
 
         gradient = g.gradient(loss, x)
         x = x + learning_rate * gradient#utils.protected_direction(gradient, sensetive_directions)

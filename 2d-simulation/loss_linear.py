@@ -207,7 +207,7 @@ for t1 in theta1:
     mean_ratio_theta_row = []
     #mean_ratio_theta_l2_base_row = []
     for t2 in theta2:
-        r = mean_ratio([t1, t2], fair_direction, regularizer= 100, learning_rate=2e-2, num_steps=1000)
+        r = mean_ratio([t1, t2], fair_direction, regularizer= 100, learning_rate=2e-2, num_steps=400)
         mean_ratio_theta_row.append(r)
         #r = mean_ratio_l2_base([t1, t2], fair_direction, regularizer= 2, learning_rate=2e-2, num_steps=100)
         #mean_ratio_theta_l2_base_row.append(r)
