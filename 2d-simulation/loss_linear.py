@@ -163,9 +163,9 @@ def mean_ratio(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num
     n = ratios.shape[0]
     mean = np.mean(ratios)
     std = np.std(ratios)
-    ub = mean - 1.96 * std / np.sqrt(n)
+    ub = mean - 1.645 * std / np.sqrt(n)
     print(f'Done for mean ratio of {theta} with mean, std, n ub {mean} {std} {n} {ub}')
-    return mean - 1.96 * std/np.sqrt(n)#np.mean(ratios)
+    return mean - 1.645 * std/np.sqrt(n)#np.mean(ratios)
 
 
 # def mean_ratio_l2_base(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num_steps = 200):
