@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import scipy
 plt.ioff()
 import sys
+tf.enable_eager_execution()
 
 def sample_perturbation(data_point, regularizer = 20, learning_rate = 3e-2, num_steps = 200):
     x, y = data_point

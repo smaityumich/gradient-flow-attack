@@ -12,6 +12,7 @@ import scipy
 plt.ioff()
 import sys
 import json
+tf.enable_eager_execution()
 
 def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num_steps = 200):
     x, y = data_point

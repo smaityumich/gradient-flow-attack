@@ -13,6 +13,7 @@ plt.ioff()
 import sys
 import json
 from tensorflow import keras
+tf.enable_eager_execution()
 
 
 
