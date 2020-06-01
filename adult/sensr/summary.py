@@ -82,9 +82,12 @@ if __name__ == '__main__':
 
      for s, e in zip(start, end):
           filename = f'./sensr/outcome/perturbed_ratio_start_{start}_end_{end}_seed_{seed_data}_{seed_model}_lr_{lr}.npy'
-          ratio_part = np.load(filename)
-          ratios.append(ratio_part)
-          a = np.concatenate(ratios)
+          try:
+               ratio_part = np.load(filename)
+               ratios.append(ratio_part)
+          except:
+               continue
+     a = np.concatenate(ratios)
 
      a = a[np.isfinite(a)]
      lb = np.mean(a) - 1.645*np.std(a)/np.sqrt(a.shape[0])
