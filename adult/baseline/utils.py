@@ -61,6 +61,12 @@ class ClassifierGraph(keras.Model):
         protected_regression.fit(x_unprotected_train, x_protected_train[:, 1])
         sensetive_directions.append(protected_regression.coef_.reshape((-1,)))
         sensetive_directions = np.array(sensetive_directions)
+
+        sensetive_directions = scipy.linalg.orth(sensetive_directions.T).T
+        for i, s in enumerate(sensetive_directions):
+            while np.linalg.norm(s) != 1:
+                s = s/ np.linalg.norm(s)
+            sensetive_directions[i] = s
         sensetive_directions = tf.cast(sensetive_directions, dtype = tf.float32)
 
         

@@ -36,7 +36,7 @@ def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num
             g.watch(x)
             prob = graph(x)
             perturb = utils.unprotected_direction(x-x_start, sensetive_directions)
-            loss = utils.EntropyLoss(y, prob)  - regularizer / ((0 + 1) ** (2/3)) * tf.norm(perturb)**2
+            loss = utils.EntropyLoss(y, prob)  - regularizer / ((i + 1) ** (2/3)) * tf.norm(perturb)**2
 
         gradient = g.gradient(loss, x)
         x = x + learning_rate * gradient#utils.protected_direction(gradient, sensetive_directions)

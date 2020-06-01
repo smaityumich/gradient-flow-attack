@@ -81,7 +81,7 @@ if __name__ == '__main__':
      ratios = []
 
      for s, e in zip(start, end):
-          filename = f'./sensr/outcome/perturbed_ratio_start_{start}_end_{end}_seed_{seed_data}_{seed_model}_lr_{lr}.npy'
+          filename = f'./sensr/outcome/perturbed_ratio_start_{s}_end_{e}_seed_{seed_data}_{seed_model}_lr_{lr}.npy'
           try:
                ratio_part = np.load(filename)
                ratios.append(ratio_part)
