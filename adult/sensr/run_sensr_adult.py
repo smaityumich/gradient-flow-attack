@@ -8,8 +8,7 @@ import tensorflow as tf
 import json
 import sys
 
-np.random.seed(1)
-seeds = np.random.randint(100000, size = (10, 2))
+
 # np.save('seeds.npy', seeds)
 def run_sensr(i):
     seed_data = seeds[i, 0]
@@ -64,6 +63,7 @@ def run_sensr(i):
         json.dump(weight, f)
 
 if __name__ == "__main__":
-
+    np.random.seed(1)
+    seeds = np.random.randint(100000, size = (10, 2))
     i = int(sys.argv[1])
     run_sensr(i)
