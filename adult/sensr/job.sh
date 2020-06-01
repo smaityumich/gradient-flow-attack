@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=test-std-node
 #SBATCH --output=logs/run_sensr_adult_%A_%a.out
-#SBATCH --array=7
+#SBATCH --array=0-9
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=1gb
