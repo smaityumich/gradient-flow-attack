@@ -3,10 +3,59 @@ from tensorflow import keras
 import numpy as np
 import scipy
 
+
+import numpy as np
+import tensorflow as tf
+from adult_modified import preprocess_adult_data
+from sklearn import linear_model
+import utils
+import time
+import multiprocessing as mp
+import random
+import matplotlib.pyplot as plt
+import scipy
+plt.ioff()
+import sys
+
+
+start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
+seed_data = int(float(sys.argv[3]))
+seed_model = int(float(sys.argv[4]))
+lr = float(sys.argv[5])
+tf.random.set_seed(seed_model)
+np.random.seed(seed_model)
+
+
+
 class ClassifierGraph(keras.Model):
 
-    def __init__(self, n_hiddens, num_classes, input_shape = (39,)):
+    def __init__(self, n_hiddens, num_classes, input_shape = (39,), seed_data = 1):
         super(ClassifierGraph, self).__init__()
+        dataset_orig_train, _ = preprocess_adult_data(seed = seed_data)
+
+        x_unprotected_train, x_protected_train = dataset_orig_train.features[:, :39], dataset_orig_train.features[:, 39:]
+        
+
+
+
+
+## Running linear regression to get sensetive directions 
+
+#protected_regression = linear_model.LinearRegression(fit_intercept = False)
+#protected_regression.fit(x_unprotected_train, x_protected_train)
+#sensetive_directions = protected_regression.coef_
+
+
+
+        sensetive_directions = []
+        protected_regression = linear_model.LogisticRegression(fit_intercept = True)
+        protected_regression.fit(x_unprotected_train, x_protected_train[:, 0])
+        sensetive_directions.append(protected_regression.coef_.reshape((-1,)))
+        protected_regression.fit(x_unprotected_train, x_protected_train[:, 1])
+        sensetive_directions.append(protected_regression.coef_.reshape((-1,)))
+        sensetive_directions = np.array(sensetive_directions)
+
+        
         self.Layers = []
         self.Layers.append(keras.layers.Dense(n_hiddens[0], activation = tf.nn.relu, name = 'layer-1', input_shape = input_shape))
         if len(n_hiddens) > 1:

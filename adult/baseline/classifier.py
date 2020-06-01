@@ -12,6 +12,7 @@ import utils
 
 
 
+
 def Classifier(graph, x_train, y_train,  num_steps = 10000, batch_size = 125, learning_rate = 1e-4):
     # Tensor slice for train data
     # Partition train data

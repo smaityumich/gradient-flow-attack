@@ -11,8 +11,14 @@ data_index = range(ends.shape[0])
 iteration = range(10)
 lrs = [1e-2, 1e-3, 4e-4, 1e-4]
 
+a = itertools.product(expts, data_index, iteration, lrs)
+b = [i for i in a]
+i = int(float(sys.argv[1]))
 
-def part_fluc(expt, d, i, lr):
+
+
+def part_fluc(args):
+    expt, d, i, lr = args
     start = starts[d]
     end = ends[d]
     np.random.seed(1)
@@ -31,4 +37,7 @@ def part_fluc(expt, d, i, lr):
         data_seed = seeds[i, 0]
         expt_seed = seeds[i, 1]
         os.system(f'{expt}/adv_ratio.py {start} {end} {data_seed} {expt_seed} {lr}')
+
+
+part_fluc(b[i])
 
