@@ -453,7 +453,7 @@ def train_fair_nn(X_train, y_train, tf_prefix='', X_test=None, X_test_counter=No
     proj_compl = compl_svd_projector(protected_directions, svd=-1)
     dist_f = fair_dist(proj_compl, 0.)
     
-    global_step = tf.contrib.framework.get_or_create_global_step()
+    global_step = tf.train.get_or_create_global_step()
 
     N, D = X_train.shape
     lamb = lamb_init

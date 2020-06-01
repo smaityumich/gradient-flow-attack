@@ -45,7 +45,7 @@ def run_sensr(i):
 
     sensitive_directions = np.array(sensitive_directions)
 
-    tf.reset_default_graph()
+    tf.compat.v1.reset_default_graph()
     fair_info = [group_train, group_test, group_names, sensitive_directions]
     weights, train_logits, test_logits, _, variables = train_fair_nn(x_train, y_train, tf_prefix='sensr', adv_epoch_full=50, l2_attack=0.0001,
                                           adv_epoch=10, ro=0.001, adv_step=10., plot=True, fair_info=fair_info, balance_batch=True, 
