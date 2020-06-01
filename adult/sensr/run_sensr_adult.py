@@ -11,7 +11,7 @@ import sys
 np.random.seed(1)
 seeds = np.random.randint(100000, size = (10, 2))
 # np.save('seeds.npy', seeds)
-def run_sensr(i)
+def run_sensr(i):
     
     seed_data = seeds[i, 0]
     seed_model = seeds[i, 1]
