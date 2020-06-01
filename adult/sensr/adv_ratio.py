@@ -105,7 +105,7 @@ if __name__ == 'create_fluctuations':
     sensetive_directions = tf.cast(sensetive_directions, dtype = tf.float32)
 
 
-    with open(f'sensr/models/data_{seed_data}_{seed_model}.txt', 'r') as f:
+    with open(f'./sensr/models/data_{seed_data}_{seed_model}.txt', 'r') as f:
         weight = json.load(f)
 
     weights = [np.array(w) for w in weight]
@@ -136,7 +136,7 @@ if __name__ == 'create_fluctuations':
 
 
 
-    filename = f'sensr/outcome/perturbed_ratio_start_{start}_end_{end}_seed_{seed_data}_{seed_model}_lr_{lr}.npy'
+    filename = f'./sensr/outcome/perturbed_ratio_start_{start}_end_{end}_seed_{seed_data}_{seed_model}_lr_{lr}.npy'
 
 
     np.save(filename, perturbed_test_samples)

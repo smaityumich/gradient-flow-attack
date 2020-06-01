@@ -90,7 +90,7 @@ if __name__ == 'create_fluctuations':
 
 
 
-    graph = tf.keras.models.load_model(f'baseline_bal/graphs/graph_{seed_data}_{seed_model}')               
+    graph = tf.keras.models.load_model(f'./baseline_bal/graphs/graph_{seed_data}_{seed_model}')               
 
 
 
@@ -108,7 +108,7 @@ if __name__ == 'create_fluctuations':
 
 
 
-    filename = f'baseline_bal/outcome/perturbed_ratio_start_{start}_end_{end}_seed_{seed_data}_{seed_model}_lr_{lr}.npy'
+    filename = f'./baseline_bal/outcome/perturbed_ratio_start_{start}_end_{end}_seed_{seed_data}_{seed_model}_lr_{lr}.npy'
 
 
     np.save(filename, perturbed_test_samples)

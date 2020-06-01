@@ -91,7 +91,7 @@ if __name__ == 'create_fluctuations':
     sensetive_directions = tf.cast(sensetive_directions, dtype = tf.float32)
 
 
-    with open(f'reduction/models/data_{seed}.txt', 'r') as f:
+    with open(f'./reduction/models/data_{seed}.txt', 'r') as f:
         data = json.load(f)
 
     def graph(x):
@@ -125,7 +125,7 @@ if __name__ == 'create_fluctuations':
 
 
 
-    filename = f'reduction/outcome/perturbed_ratio_start_{start}_end_{end}_seed_{seed}_lr_{lr}.npy'
+    filename = f'./reduction/outcome/perturbed_ratio_start_{start}_end_{end}_seed_{seed}_lr_{lr}.npy'
 
 
     np.save(filename, perturbed_test_samples)
