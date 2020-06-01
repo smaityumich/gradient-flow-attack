@@ -6,10 +6,17 @@ from sklearn.preprocessing import OneHotEncoder
 from train_clp_adult import train_fair_nn
 import tensorflow as tf
 import json
+import sys
 
-# Adult data processing
-seed = 17
-dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
+# np.random.seed(1)
+# seeds = np.random.randint(100000, size = (10, 2))
+# np.save('seeds.npy', seeds)
+
+
+seed_data = int(float(sys.argv[1]))
+seed_model = int(float(sys.argv[2]))
+
+dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed_data)
 
 all_train, all_test = dataset_orig_train.features, dataset_orig_test.features
 y_train, y_test = dataset_orig_train.labels.reshape((-1,)), dataset_orig_test.labels.reshape((-1,))
@@ -38,10 +45,10 @@ sensitive_directions = np.array(sensitive_directions)
 
 tf.reset_default_graph()
 fair_info = [group_train, group_test, group_names, sensitive_directions]
-weights, train_logits, test_logits, _, variables = train_fair_nn(x_train, y_train, tf_prefix='sensr', adv_epoch_full=10, l2_attack=0.0001,
-                                          adv_epoch=50, ro=0.001, adv_step=10., plot=True, fair_info=fair_info, balance_batch=True, 
+weights, train_logits, test_logits, _, variables = train_fair_nn(x_train, y_train, tf_prefix='sensr', adv_epoch_full=50, l2_attack=0.0001,
+                                          adv_epoch=10, ro=0.001, adv_step=10., plot=True, fair_info=fair_info, balance_batch=True, 
                                           X_test = x_test, X_test_counter=None, y_test = y_test, lamb_init=2., 
-                                          n_units=[100], l2_reg=0, epoch=12000, batch_size=1000, lr=1e-4, lambda_clp=0.,
+                                          n_units=[100], l2_reg=0, epoch=20000, batch_size=1000, lr=1e-5, lambda_clp=0.,
                                           fair_start=0., counter_init=False, seed=None)
 
 print('Gender:')
@@ -51,5 +58,5 @@ _ = group_metrics(y_test[:,1], test_logits.argmax(axis=1), group_test[:,1], labe
 
 
 weight = [w.tolist() for w in weights]
-with open('data.txt', 'w') as f:
+with open(f'models/data_{seed_data}_{seed_model}.txt', 'w') as f:
     json.dump(weight, f)

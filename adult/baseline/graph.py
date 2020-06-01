@@ -9,6 +9,7 @@ import multiprocessing as mp
 import random
 import matplotlib.pyplot as plt
 import scipy
+import numpy as np
 plt.ioff()
 
 
@@ -30,8 +31,11 @@ y_train, y_test = dataset_orig_train.labels.reshape((-1,)), dataset_orig_test.la
 y_train, y_test = y_train.astype('int32'), y_test.astype('int32')
 x_unprotected_train, x_unprotected_test = tf.cast(x_unprotected_train, dtype = tf.float32), tf.cast(x_unprotected_test, dtype = tf.float32)
 y_train, y_test = tf.one_hot(y_train, 2), tf.one_hot(y_test, 2)
+np.random.seed(seed)
+seeds = np.random.randint(10000, size = (10,))
+np.save('seeds.npy', seeds)
+for seed in seeds:
 
-
-init_graph = utils.ClassifierGraph([50,], 2, input_shape=(39, ))
-graph = cl.Classifier(init_graph, x_unprotected_train, y_train, num_steps = 12000) # use for unfair algo
-graph.model.save('graph')
+    init_graph = utils.ClassifierGraph([50,], 2, input_shape=(39, ))
+    graph = cl.Classifier(init_graph, x_unprotected_train, y_train, num_steps = 12000) # use for unfair algo
+    graph.model.save(f'graphs/graph_{seed}')

@@ -96,7 +96,7 @@ start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
 perturbed_test_samples = []
 #for data in zip(x_unprotected_test[start:end], y_test[start:end]):
 #     perturbed_test_samples.append(sample_perturbation(data, regularizer=200, learning_rate=4e-3, num_steps=500))
-with mp.Pool(cpus) as pool:
+with mp.Pool(6) as pool:
      perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
 # end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)

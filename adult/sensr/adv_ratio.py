@@ -11,12 +11,17 @@ import matplotlib.pyplot as plt
 import scipy
 plt.ioff()
 import sys
+import json
+from tensorflow import keras
 
 
-seed = 1
-tf.random.set_seed(seed)
-np.random.seed(seed)
-dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
+start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
+seed_data, seed_model = int(float(sys.argv[3])), int(float(sys.argv[4]))
+lr = float(sys.argv[5])
+
+tf.random.set_seed(seed_model)
+np.random.seed(seed_model)
+dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed_data)
 
 x_unprotected_train, x_protected_train = dataset_orig_train.features[:, :39], dataset_orig_train.features[:, 39:]
 x_unprotected_test, x_protected_test = dataset_orig_test.features[:, :39], dataset_orig_test.features[:, 39:]
@@ -66,8 +71,28 @@ protected_directions = tf.cast(protected_directions, dtype = tf.float32)
 sensetive_directions = tf.cast(sensetive_directions, dtype = tf.float32)
 
 
+with open(f'sensr/models/data_{seed_data}_{seed_model}.txt', 'r') as f:
+    weight = json.load(f)
 
-graph = model.model                   
+weights = [np.array(w) for w in weight]
+
+
+
+def SimpleDense(variable):
+    w, b = variable
+    w = tf.cast(w, dtype = tf.float32)
+    b = tf.cast(b, dtype = tf.float32)
+    return lambda x: tf.matmul(x, w) + b
+
+def graph(x):
+    layer1 = SimpleDense([weights[0], weights[1]])
+    layer2 = SimpleDense([weights[2], weights[3]])
+    out = tf.nn.relu(layer1(x))
+    out = layer2(out)
+    prob = tf.nn.softmax(out)
+    return prob
+
+                
 
 def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num_steps = 200):
     x, y = data_point
@@ -94,10 +119,10 @@ def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num
 
 #cpus = mp.cpu_count()
 #print(f'Number of cpus : {cpus}')
-start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
+
 perturbed_test_samples = []
 for data in zip(x_unprotected_test[start:end], y_test[start:end]):
-     perturbed_test_samples.append(sample_perturbation(data, regularizer=50, learning_rate=4e-4, num_steps=200))
+     perturbed_test_samples.append(sample_perturbation(data, regularizer=50, learning_rate=lr, num_steps=200))
 # with mp.Pool(cpus) as pool:
 #     perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
 # end_time = time.time()
@@ -105,7 +130,7 @@ perturbed_test_samples = np.array(perturbed_test_samples)
 
 
 
-filename = f'outcome/perturbed_ratio_{start}_{end}.npy'
+filename = f'sensr/outcome/perturbed_ratio_start_{start}_end_{end}_seed_{seed_data}_{seed_model}_lr_{lr}.npy'
 
 
 np.save(filename, perturbed_test_samples)
