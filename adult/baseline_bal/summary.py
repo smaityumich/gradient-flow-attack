@@ -71,7 +71,7 @@ if __name__ == '__main__':
      lb = np.mean(a) - 1.645*np.std(a)/np.sqrt(a.shape[0])
      t = (np.mean(a)-1.25)/np.std(a)
      t *= np.sqrt(a.shape[0])
-     pval = 1- norm.pdf(t)
+     pval = 1- norm.cdf(t)
 
      save_dict = {'algo': 'baseline_bal', 'seed': (seed_data, seed_model), 'lr': lr, 'accuracy': accuracy}
      save_dict['lb'] = lb
