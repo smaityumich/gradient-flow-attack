@@ -11,10 +11,14 @@ import scipy
 plt.ioff()
 import sys
 
-seed = 1
-tf.random.set_seed(seed)
-np.random.seed(seed)
-dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
+
+start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
+seed_data = int(float(sys.argv[3]))
+seed_model = int(float(sys.argv[4]))
+lr = float(sys.argv[5])
+tf.random.set_seed(seed_model)
+np.random.seed(seed_model)
+dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed_data)
 
 x_unprotected_train, x_protected_train = dataset_orig_train.features[:, :39], dataset_orig_train.features[:, 39:]
 x_unprotected_test, x_protected_test = dataset_orig_test.features[:, :39], dataset_orig_test.features[:, 39:]
@@ -39,6 +43,8 @@ sensetive_directions.append(protected_regression.coef_.reshape((-1,)))
 protected_regression.fit(x_unprotected_test, x_protected_test[:, 1])
 sensetive_directions.append(protected_regression.coef_.reshape((-1,)))
 sensetive_directions = np.array(sensetive_directions)
+
+
 
 sensetive_directions = scipy.linalg.orth(sensetive_directions.T).T
 for i, s in enumerate(sensetive_directions):
@@ -65,7 +71,7 @@ sensetive_directions = tf.cast(sensetive_directions, dtype = tf.float32)
 
 
 
-graph = tf.keras.models.load_model('graph')               
+graph = tf.keras.models.load_model(f'baseline_bal/graphs/graph_{seed_data}_{seed_model}')               
 
 def sample_perturbation(data_point, regularizer = 20, learning_rate = 3e-2, num_steps = 200):
     x, y = data_point
@@ -78,7 +84,7 @@ def sample_perturbation(data_point, regularizer = 20, learning_rate = 3e-2, num_
             g.watch(x)
             prob = graph(x)
             perturb = utils.unprotected_direction(x-x_start, sensetive_directions)
-            loss = utils.EntropyLoss(y, prob)  - regularizer / ((0 + 1) ** (2/3)) * tf.norm(perturb)**2
+            loss = utils.EntropyLoss(y, prob)  - regularizer / ((i + 1) ** (2/3)) * tf.norm(perturb)**2
 
         gradient = g.gradient(loss, x)
         x = x + learning_rate * gradient#utils.protected_direction(gradient, sensetive_directions)
@@ -90,20 +96,20 @@ def sample_perturbation(data_point, regularizer = 20, learning_rate = 3e-2, num_
 
 
 
-cpus = mp.cpu_count()
+#cpus = mp.cpu_count()
 #print(f'Number of cpus : {cpus}')
-start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
+
 perturbed_test_samples = []
-#for data in zip(x_unprotected_test[start:end], y_test[start:end]):
-#     perturbed_test_samples.append(sample_perturbation(data, regularizer=200, learning_rate=4e-3, num_steps=500))
-with mp.Pool(6) as pool:
-     perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
+for data in zip(x_unprotected_test[start:end], y_test[start:end]):
+     perturbed_test_samples.append(sample_perturbation(data, regularizer=50, learning_rate=lr, num_steps=200))
+# with mp.Pool(cpus) as pool:
+#     perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
 # end_time = time.time()
 perturbed_test_samples = np.array(perturbed_test_samples)
 
 
 
-filename = f'outcome/perturbed_ratio_{start}_{end}.npy'
+filename = f'baseline_bal/outcome/perturbed_ratio_start_{start}_end_{end}_seed_{seed_data}_{seed_model}_lr_{lr}.npy'
 
 
 np.save(filename, perturbed_test_samples)
