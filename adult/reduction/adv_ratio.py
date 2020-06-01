@@ -13,7 +13,7 @@ import sys
 import json
 #tf.compat.v1.enable_eager_execution()
 
-def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num_steps = 200):
+def sample_perturbation(data_point, graph,  regularizer = 100, learning_rate = 5e-2, num_steps = 200):
     x, y = data_point
     x = tf.reshape(x, (1, -1))
     y = tf.reshape(y, (1, -1))
@@ -91,8 +91,7 @@ if __name__ == '__main__':
 
     with open(f'./reduction/models/data_{seed}.txt', 'r') as f:
         data = json.load(f)
-    a, b, c = data['coefs'], type(data['intercepts']), type(data['ens_weights'])
-    print(f'{a[0], b, c}')
+    
     def graph(x):
         n, _ = x.shape
         prob = tf.zeros([n, 1], dtype = tf.float32)
@@ -105,9 +104,7 @@ if __name__ == '__main__':
 
         return tf.concat([1-prob, prob], axis = 1)
 
-    for coef, intercept, weight in zip(data['coefs'], data['intercepts'], data['ens_weights']):
-        print(f'{coef}{intercept}{weight}')
-            
+    
 
 
 
@@ -119,7 +116,7 @@ if __name__ == '__main__':
 
     perturbed_test_samples = []
     for data in zip(x_unprotected_test[start:end], y_test[start:end]):
-        perturbed_test_samples.append(sample_perturbation(data, regularizer=50, learning_rate=lr, num_steps=500))
+        perturbed_test_samples.append(sample_perturbation(data, graph,  regularizer=50, learning_rate=lr, num_steps=500))
 # with mp.Pool(cpus) as pool:
 #     perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
 # end_time = time.time()
