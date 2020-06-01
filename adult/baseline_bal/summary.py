@@ -74,6 +74,8 @@ if __name__ == '__main__':
      pval = 1- norm.pdf(t)
 
      save_dict = {'algo': 'baseline_bal', 'seed': (seed_data, seed_model), 'lr': lr, 'accuracy': accuracy}
+     save_dict['lb'] = lb
+     save_dict['pval'] = pval
      save_dict['bal_acc'], \
             save_dict['gap_rms_gen'], save_dict['mean_gap_gen'], save_dict['max_gap_gen'], \
             save_dict['average_odds_difference_gen'], save_dict['equal_opportunity_difference_gen'],\
