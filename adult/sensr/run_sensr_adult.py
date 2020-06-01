@@ -12,33 +12,32 @@ np.random.seed(1)
 seeds = np.random.randint(100000, size = (10, 2))
 # np.save('seeds.npy', seeds)
 def run_sensr(i):
-    
     seed_data = seeds[i, 0]
     seed_model = seeds[i, 1]
 
-#seed_data = int(float(sys.argv[1]))
-#seed_model = int(float(sys.argv[2]))
+    #seed_data = int(float(sys.argv[1]))
+    #seed_model = int(float(sys.argv[2]))
 
     dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed_data)
 
     all_train, all_test = dataset_orig_train.features, dataset_orig_test.features
-	y_train, y_test = dataset_orig_train.labels.reshape((-1,)), dataset_orig_test.labels.reshape((-1,))
-	y_train, y_test = y_train.astype('int32'), y_test.astype('int32')
+    y_train, y_test = dataset_orig_train.labels.reshape((-1,)), dataset_orig_test.labels.reshape((-1,))
+    y_train, y_test = y_train.astype('int32'), y_test.astype('int32')
 
-	x_train = np.delete(all_train, [dataset_orig_test.feature_names.index(feat) for feat in ['sex_ Male', 'race_ White']], axis = 1)
-	x_test = np.delete(all_test, [dataset_orig_test.feature_names.index(feat) for feat in ['sex_ Male', 'race_ White']], axis = 1)
+    x_train = np.delete(all_train, [dataset_orig_test.feature_names.index(feat) for feat in ['sex_ Male', 'race_ White']], axis = 1)
+    x_test = np.delete(all_test, [dataset_orig_test.feature_names.index(feat) for feat in ['sex_ Male', 'race_ White']], axis = 1)
 
-	group_train = dataset_orig_train.features[:, [dataset_orig_test.feature_names.index(feat) for feat in ['sex_ Male', 'race_ White']]]
-	group_test = dataset_orig_test.features[:, [dataset_orig_test.feature_names.index(feat) for feat in ['sex_ Male', 'race_ White']]]
-	group_names = ['Gender', 'Race']
+    group_train = dataset_orig_train.features[:, [dataset_orig_test.feature_names.index(feat) for feat in ['sex_ Male', 'race_ White']]]
+    group_test = dataset_orig_test.features[:, [dataset_orig_test.feature_names.index(feat) for feat in ['sex_ Male', 'race_ White']]]
+    group_names = ['Gender', 'Race']
 
-	one_hot = OneHotEncoder(sparse=False)
-	one_hot.fit(y_train.reshape(-1,1))
-	names_income = one_hot.categories_
-	y_train = one_hot.transform(y_train.reshape(-1,1))
-	y_test = one_hot.transform(y_test.reshape(-1,1))
+    one_hot = OneHotEncoder(sparse=False)
+    one_hot.fit(y_train.reshape(-1,1))
+    names_income = one_hot.categories_
+    y_train = one_hot.transform(y_train.reshape(-1,1))
+    y_test = one_hot.transform(y_test.reshape(-1,1))
 
-	sensitive_directions = []
+    sensitive_directions = []
     for y_protected in group_train.T:
     	lr = LogisticRegression(solver='liblinear', fit_intercept=True)
     	lr.fit(x_train, y_protected)
