@@ -14,6 +14,14 @@ import sys
 import json
 from scipy.stats import norm
 
+
+def SimpleDense(variable):
+    w, b = variable
+    w = tf.cast(w, dtype = tf.float32)
+    b = tf.cast(b, dtype = tf.float32)
+    return lambda x: tf.matmul(x, w) + b
+
+
 if __name__ == '__main__':
      seed_data, seed_model = int(float(sys.argv[1])), int(float(sys.argv[2]))
      lr = float(sys.argv[3])
