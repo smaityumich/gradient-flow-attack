@@ -13,25 +13,7 @@ import sys
 import json
 #tf.compat.v1.enable_eager_execution()
 
-def sample_perturbation(data_point, graph,  regularizer = 100, learning_rate = 5e-2, num_steps = 200):
-    x, y = data_point
-    x = tf.reshape(x, (1, -1))
-    y = tf.reshape(y, (1, -1))
-    x_start = x
-    #x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*1e-9
-    for _ in range(num_steps):
-        with tf.GradientTape() as g:
-            g.watch(x)
-            prob = graph(x)
-            perturb = utils.unprotected_direction(x-x_start, sensetive_directions)
-            loss = utils.EntropyLoss(y, prob)  - regularizer / ((i+1) ** (2/3)) * tf.norm(perturb)**2
 
-        gradient = g.gradient(loss, x)
-        x = x + learning_rate * gradient#utils.protected_direction(gradient, sensetive_directions)
-
-    return_loss = utils.EntropyLoss(y, graph(x)) / utils.EntropyLoss(y, graph(x_start))
-    
-    return return_loss.numpy()
 
 
 if __name__ == '__main__':
@@ -92,23 +74,46 @@ if __name__ == '__main__':
     with open(f'./reduction/models/data_{seed}.txt', 'r') as f:
         data = json.load(f)
     
+    coef = data['coefs']
+    intercept = data['intercepts']
+    weight = data['ens_weights']
+    coefs = [tf.cast(c, dtype = tf.float32) for c in coef]
+    intercepts = [tf.cast(c, dtype = tf.float32) for c in intercept]
+    weights = [tf.cast(c, dtype = tf.float32) for c in weight]
+
     def graph(x):
+        global data
         n, _ = x.shape
         prob = tf.zeros([n, 1], dtype = tf.float32)
-        #a = len(data['coefs'])
-        #for i in range(a):
-        for coef, intercept, weight in zip(list(data['coefs']), list(data['intercepts']), list(data['ens_weights'])):
-         #   coef, intercept, weight = data['coefs'][i], data['intercepts'][i], data['ens_weights'][i]
-            coef = tf.cast(coef, dtype = tf.float32)
+        for coef, intercept, weight in zip(coefs, intercepts, weights):
+            #coef = tf.cast(coef, dtype = tf.float32)
             coef = tf.reshape(coef, [-1, 1])
-            model_logit = x @ coef + tf.cast(intercept, dtype = tf.float32)
+            model_logit = x @ coef + intercept#tf.cast(intercept, dtype = tf.float32)
             model_prob = tf.exp(model_logit) / (1 + tf.exp(model_logit))
-            prob += model_prob * tf.cast(weight, dtype = tf.float32)
+            prob += model_prob * weight#tf.cast(weight, dtype = tf.float32)
 
         return tf.concat([1-prob, prob], axis = 1)
 
     
+    def sample_perturbation(data_point,  regularizer = 100, learning_rate = 5e-2, num_steps = 200):
+        x, y = data_point
+        x = tf.reshape(x, (1, -1))
+        y = tf.reshape(y, (1, -1))
+        x_start = x
+    #x += tf.cast(np.random.normal(size=(1, 39)), dtype = tf.float32)*1e-9
+        for _ in range(num_steps):
+            with tf.GradientTape() as g:
+                g.watch(x)
+                prob = graph(x)
+                perturb = utils.unprotected_direction(x-x_start, sensetive_directions)
+                loss = utils.EntropyLoss(y, prob)  - regularizer / ((i+1) ** (2/3)) * tf.norm(perturb)**2
 
+            gradient = g.gradient(loss, x)
+            x = x + learning_rate * gradient#utils.protected_direction(gradient, sensetive_directions)
+
+        return_loss = utils.EntropyLoss(y, graph(x)) / utils.EntropyLoss(y, graph(x_start))
+    
+        return return_loss.numpy()
 
 
     a = graph(tf.cast(np.random.normal(size = (100, 39)), dtype = tf.float32))
@@ -119,7 +124,7 @@ if __name__ == '__main__':
 
     perturbed_test_samples = []
     for data in zip(x_unprotected_test[start:end], y_test[start:end]):
-        perturbed_test_samples.append(sample_perturbation(data, graph,  regularizer=50, learning_rate=lr, num_steps=500))
+        perturbed_test_samples.append(sample_perturbation(data,  regularizer=50, learning_rate=lr, num_steps=500))
 # with mp.Pool(cpus) as pool:
 #     perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
 # end_time = time.time()
