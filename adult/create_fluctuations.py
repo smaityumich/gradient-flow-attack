@@ -39,6 +39,6 @@ if __name__ == '__main__':
 
     a = itertools.product(expts, data_index, iteration, lrs)
     b = [i for i in a]
-    i = int(float(sys.argv[1]))
+    i = int(sys.argv[1])
     part_fluc(b[i])
 
