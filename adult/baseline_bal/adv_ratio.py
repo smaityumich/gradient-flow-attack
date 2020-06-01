@@ -31,7 +31,7 @@ def sample_perturbation(data_point, regularizer = 20, learning_rate = 3e-2, num_
     
     return return_loss.numpy()
 
-if __name__ == '__main__':
+if __name__ == 'create_fluctuations':
 
     start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
     seed_data = int(float(sys.argv[3]))
