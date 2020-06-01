@@ -29,7 +29,7 @@ def part_summary(args):
 
 if __name__ == '__main__':
     
-    expts = ['sensr'] 
+    expts = ['baseline'] 
     iteration = range(10)
     lrs = [1e-2, 1e-3, 4e-4, 1e-4]
 
