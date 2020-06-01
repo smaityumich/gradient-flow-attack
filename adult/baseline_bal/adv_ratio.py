@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import scipy
 plt.ioff()
 import sys
+#tf.compat.v1.enable_eager_execution()
 
 def sample_perturbation(data_point, regularizer = 20, learning_rate = 3e-2, num_steps = 200):
     x, y = data_point
@@ -31,14 +32,12 @@ def sample_perturbation(data_point, regularizer = 20, learning_rate = 3e-2, num_
     
     return return_loss.numpy()
 
-if __name__ == 'create_fluctuations':
+if __name__ == '__main__':
 
     start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
     seed_data = int(float(sys.argv[3]))
     seed_model = int(float(sys.argv[4]))
     lr = float(sys.argv[5])
-    tf.random.set_seed(seed_model)
-    np.random.seed(seed_model)
     dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed_data)
 
     x_unprotected_train, x_protected_train = dataset_orig_train.features[:, :39], dataset_orig_train.features[:, 39:]
@@ -90,8 +89,7 @@ if __name__ == 'create_fluctuations':
 
 
 
-    graph = tf.keras.models.load_model(f'./baseline_bal/graphs/graph_{seed_data}_{seed_model}')               
-
+    graph = tf.keras.models.load_model(f'./baseline_bal/graphs/graph_{seed_data}_{seed_model}')     
 
 
 

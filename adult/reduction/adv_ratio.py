@@ -2,7 +2,6 @@ import numpy as np
 import tensorflow as tf
 from adult_modified import preprocess_adult_data
 from sklearn import linear_model
-import model
 import utils
 import time
 import multiprocessing as mp
@@ -12,6 +11,7 @@ import scipy
 plt.ioff()
 import sys
 import json
+#tf.compat.v1.enable_eager_execution()
 
 def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num_steps = 200):
     x, y = data_point
@@ -34,14 +34,12 @@ def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num
     return return_loss.numpy()
 
 
-if __name__ == 'create_fluctuations':
+if __name__ == '__main__':
 
 
     start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
     seed = int(float(sys.argv[3]))
     lr = float(sys.argv[4])
-    tf.random.set_seed(seed)
-    np.random.seed(seed)
     dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed)
 
     x_unprotected_train, x_protected_train = dataset_orig_train.features[:, :39], dataset_orig_train.features[:, 39:]
@@ -93,7 +91,8 @@ if __name__ == 'create_fluctuations':
 
     with open(f'./reduction/models/data_{seed}.txt', 'r') as f:
         data = json.load(f)
-
+    a, b, c = data['coefs'], type(data['intercepts']), type(data['ens_weights'])
+    print(f'{a[0], b, c}')
     def graph(x):
         n, _ = x.shape
         prob = tf.zeros([n, 1], dtype = tf.float32)
@@ -106,18 +105,21 @@ if __name__ == 'create_fluctuations':
 
         return tf.concat([1-prob, prob], axis = 1)
 
-                 
+    for coef, intercept, weight in zip(data['coefs'], data['intercepts'], data['ens_weights']):
+        print(f'{coef}{intercept}{weight}')
+            
 
 
 
-
+    a = graph(tf.cast(np.random.normal(size = (100, 39)), dtype = tf.float32))
+    print(a)
 
 #cpus = mp.cpu_count()
 #print(f'Number of cpus : {cpus}')
 
     perturbed_test_samples = []
     for data in zip(x_unprotected_test[start:end], y_test[start:end]):
-         perturbed_test_samples.append(sample_perturbation(data, regularizer=50, learning_rate=lr, num_steps=500))
+        perturbed_test_samples.append(sample_perturbation(data, regularizer=50, learning_rate=lr, num_steps=500))
 # with mp.Pool(cpus) as pool:
 #     perturbed_test_samples = pool.map(sample_perturbation, zip(x_unprotected_test, y_test))
 # end_time = time.time()
