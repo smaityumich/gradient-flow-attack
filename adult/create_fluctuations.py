@@ -3,17 +3,7 @@ import sys
 import os
 import numpy as np
 
-starts = np.arange(0, 9001, 200)
-ends = np.arange(200, 9201, 200)
-ends[-1] = 9045
-expts = ['sensr', 'baseline_bal', 'reduction']
-data_index = range(ends.shape[0])
-iteration = range(10)
-lrs = [1e-2, 1e-3, 4e-4, 1e-4]
 
-a = itertools.product(expts, data_index, iteration, lrs)
-b = [i for i in a]
-i = int(float(sys.argv[1]))
 
 
 
@@ -38,6 +28,17 @@ def part_fluc(args):
         expt_seed = seeds[i, 1]
         os.system(f'{expt}/adv_ratio.py {start} {end} {data_seed} {expt_seed} {lr}')
 
+if __name__ == '__main__':
+    starts = np.arange(0, 9001, 200)
+    ends = np.arange(200, 9201, 200)
+    ends[-1] = 9045
+    expts = ['baseline_bal', 'reduction']
+    data_index = range(ends.shape[0])
+    iteration = range(10)
+    lrs = [1e-2, 1e-3, 4e-4, 1e-4]
 
-part_fluc(b[i])
+    a = itertools.product(expts, data_index, iteration, lrs)
+    b = [i for i in a]
+    i = int(float(sys.argv[1]))
+    part_fluc(b[i])
 
