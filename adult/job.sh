@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=test-std-node
-#SBATCH --output=logs/array_%A_%a.out
-#SBATCH --array=0-9
+#SBATCH --output=logs/create_fluctuations_%A_%a.out
+#SBATCH --array=0-4
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=1gb
@@ -14,4 +14,4 @@ echo "SLURM_JOBID: " $SLURM_JOBID
 echo "SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 echo "SLURM_ARRAY_JOB_ID: " $SLURM_ARRAY_JOB_ID
 
-python3 run_sensr_adult.py $SLURM_ARRAY_TASK_ID
+python3 create_fluctuations.py $SLURM_ARRAY_TASK_ID

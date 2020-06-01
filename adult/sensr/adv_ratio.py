@@ -2,7 +2,6 @@ import numpy as np
 import tensorflow as tf
 from adult_modified import preprocess_adult_data
 from sklearn import linear_model
-import model
 import utils
 import time
 import multiprocessing as mp
@@ -13,7 +12,7 @@ plt.ioff()
 import sys
 import json
 from tensorflow import keras
-
+tf.enable_eager_execution()
 
 
 def SimpleDense(variable):
@@ -46,15 +45,13 @@ def sample_perturbation(data_point, regularizer = 100, learning_rate = 5e-2, num
     
     return return_loss.numpy()
 
-if __name__ == 'create_fluctuations':
+if __name__ == '__main__':
 
 
     start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
     seed_data, seed_model = int(float(sys.argv[3])), int(float(sys.argv[4]))
     lr = float(sys.argv[5])
 
-    tf.random.set_seed(seed_model)
-    np.random.seed(seed_model)
     dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed_data)
 
     x_unprotected_train, x_protected_train = dataset_orig_train.features[:, :39], dataset_orig_train.features[:, 39:]
