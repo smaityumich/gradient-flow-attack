@@ -6,20 +6,24 @@ import numpy as np
 def part_summary(args):
     expt, i, lr = args
     np.random.seed(1)
+    seeds = np.load('./seeds.npy')
     if expt == 'reduction':
-        seeds = np.random.randint(100000, size = (10, ))
-        seed = seeds[i]
+        seed = seeds[i, 0]
         os.system(f'python3 ./{expt}/summary.py {seed} {lr}')
     elif expt == 'baseline_bal':
-        seeds = np.random.randint(10000, size = (10, 2))
+        #seeds = np.random.randint(10000, size = (10, 2))
+        data_seed = seeds[i, 0]
+        expt_seed = seeds[i, 1]
+        os.system(f'python3 ./{expt}/summary.py {data_seed} {expt_seed} {lr}')
+    elif expt == 'baseline':
+        #seeds = np.random.randint(10000, size = (10, 2))
         data_seed = seeds[i, 0]
         expt_seed = seeds[i, 1]
         os.system(f'python3 ./{expt}/summary.py {data_seed} {expt_seed} {lr}')
 
     else:
-        seeds = [20609, 49100, 21440, 98448, 31228,36230, 45413,35730, 50057,73349,51668,64395, 5192,98047, 7751,43757, 97561,21758,98539,77708]
-        data_seed = seeds[2*i]
-        expt_seed = seeds[2*i+ 1]
+        data_seed = seeds[i, 0]
+        expt_seed = seeds[i, 1]
         os.system(f'python3 ./{expt}/summary.py {data_seed} {expt_seed} {lr}')
 
 
