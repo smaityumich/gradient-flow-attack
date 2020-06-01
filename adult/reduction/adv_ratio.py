@@ -95,7 +95,10 @@ if __name__ == '__main__':
     def graph(x):
         n, _ = x.shape
         prob = tf.zeros([n, 1], dtype = tf.float32)
-        for coef, intercept, weight in zip(data['coefs'], data['intercepts'], data['ens_weights']):
+        #a = len(data['coefs'])
+        #for i in range(a):
+        for coef, intercept, weight in zip(list(data['coefs']), list(data['intercepts']), list(data['ens_weights'])):
+         #   coef, intercept, weight = data['coefs'][i], data['intercepts'][i], data['ens_weights'][i]
             coef = tf.cast(coef, dtype = tf.float32)
             coef = tf.reshape(coef, [-1, 1])
             model_logit = x @ coef + tf.cast(intercept, dtype = tf.float32)
