@@ -13,8 +13,8 @@ import sys
 # np.save('seeds.npy', seeds)
 
 
-seed_data = int(float(sys.argv[1]))
-seed_model = int(float(sys.argv[2]))
+#seed_data = int(float(sys.argv[1]))
+#seed_model = int(float(sys.argv[2]))
 
 def fit_model(seed_data, seed_model):
     dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed_data)
