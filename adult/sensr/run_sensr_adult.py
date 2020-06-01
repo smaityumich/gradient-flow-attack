@@ -15,8 +15,8 @@ import sys
 
 seed_data = int(float(sys.argv[1]))
 seed_model = int(float(sys.argv[2]))
-
-dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed_data)
+def run_model(seed_data, seed_model):
+    dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = seed_data)
 
 all_train, all_test = dataset_orig_train.features, dataset_orig_test.features
 y_train, y_test = dataset_orig_train.labels.reshape((-1,)), dataset_orig_test.labels.reshape((-1,))
