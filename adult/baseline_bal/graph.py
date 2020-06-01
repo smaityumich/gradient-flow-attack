@@ -17,8 +17,8 @@ tf.random.set_seed(seed)
 np.random.seed(seed)
 
 
-seeds = np.random.randint(10000, size = (10, 2))
-np.save('seeds.npy', seeds)
+seeds = np.load('../seeds.npy')
+
 
 for i in range(10):
     data_seed = seeds[i, 0]
@@ -37,6 +37,6 @@ for i in range(10):
 
 
     print(f'Running data seed {data_seed} and expt seed {expt_seed}')
-    init_graph = utils.ClassifierGraph([50,], 2, input_shape=(39, ))
-    graph = cl.Classifier(init_graph, x_unprotected_train, y_train, num_steps = 12000) # use for unfair algo
+    init_graph = utils.ClassifierGraph([50,], 2, input_shape=(39, ), seed = expt_seed)
+    graph = cl.Classifier(init_graph, x_unprotected_train, y_train, num_steps = 8000, seed=expt_seed) # use for unfair algo
     graph.model.save(f'graphs/graph_{data_seed}_{expt_seed}')

@@ -13,9 +13,10 @@ import utils
 
 
 
-def Classifier(graph, x_train, y_train,  num_steps = 10000, batch_size = 125, learning_rate = 1e-4):
+def Classifier(graph, x_train, y_train,  num_steps = 10000, batch_size = 125, learning_rate = 1e-4, seed = 1):
     # Tensor slice for train data
     # Partition train data
+    tf.random.set_seed(seed)
     index0, index1 = y_train[:, 1] == 0 , y_train[:, 1] == 1
     x_train0, x_train1 = x_train[index0], x_train[index1]
     y_train0, y_train1 = y_train[index0], y_train[index1]

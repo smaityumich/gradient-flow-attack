@@ -5,8 +5,9 @@ import scipy
 
 class ClassifierGraph(keras.Model):
 
-    def __init__(self, n_hiddens, num_classes, input_shape = (39,)):
+    def __init__(self, n_hiddens, num_classes, input_shape = (39,), seed = 1):
         super(ClassifierGraph, self).__init__()
+        tf.random.set_seed(seed)
         self.Layers = []
         self.Layers.append(keras.layers.Dense(n_hiddens[0], activation = tf.nn.relu, name = 'layer-1', input_shape = input_shape))
         if len(n_hiddens) > 1:

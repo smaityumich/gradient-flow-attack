@@ -18,26 +18,33 @@ plt.ioff()
 import sys
 
 
-start, end = int(float(sys.argv[1])), int(float(sys.argv[2]))
-seed_data = int(float(sys.argv[3]))
-seed_model = int(float(sys.argv[4]))
-lr = float(sys.argv[5])
-tf.random.set_seed(seed_model)
-np.random.seed(seed_model)
+class Project(keras.layers.Layer):
+    
+    def __init__(self, w):
+        super(Project, self).__init__()
+        self.w = tf.Variable(shape = (2, 39),initial_value=w,\
+                               trainable=False)
+        self.input_spec = tf.keras.layers.InputSpec(shape=(None, 39))
+
+    def call(self, x):
+        return unprotected_direction(x, self.w)
+
+
 
 
 
 class ClassifierGraph(keras.Model):
 
-    def __init__(self, n_hiddens, num_classes, input_shape = (39,), seed_data = 1):
+    def __init__(self, n_hiddens, num_classes, input_shape = (39,), seed_data = 1, seed_model = 1):
         super(ClassifierGraph, self).__init__()
+        tf.random.set_seed(seed_model)
         dataset_orig_train, _ = preprocess_adult_data(seed = seed_data)
 
         x_unprotected_train, x_protected_train = dataset_orig_train.features[:, :39], dataset_orig_train.features[:, 39:]
         
 
 
-
+        
 
 ## Running linear regression to get sensetive directions 
 
@@ -54,9 +61,10 @@ class ClassifierGraph(keras.Model):
         protected_regression.fit(x_unprotected_train, x_protected_train[:, 1])
         sensetive_directions.append(protected_regression.coef_.reshape((-1,)))
         sensetive_directions = np.array(sensetive_directions)
+        sensetive_directions = tf.cast(sensetive_directions, dtype = tf.float32)
 
         
-        self.Layers = []
+        self.Layers = [Project(sensetive_directions),]
         self.Layers.append(keras.layers.Dense(n_hiddens[0], activation = tf.nn.relu, name = 'layer-1', input_shape = input_shape))
         if len(n_hiddens) > 1:
             for i, n in enumerate(n_hiddens[1:], 2):

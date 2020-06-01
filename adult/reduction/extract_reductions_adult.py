@@ -12,8 +12,9 @@ constraints = {'TPRD': TruePositiveRateDifference,
 import json
 np.random.seed(1)
 # Adult data processing
-seeds = np.random.randint(100000, size = (10, ))
-for data_seed in seeds:
+seeds = np.load('../seeds.npy')
+for i in range(10):
+    data_seed = seeds[i, 0]
     print(f'Running data seed {data_seed}')
     dataset_orig_train, dataset_orig_test = preprocess_adult_data(seed = data_seed)
 

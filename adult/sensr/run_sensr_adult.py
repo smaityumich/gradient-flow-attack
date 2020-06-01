@@ -10,9 +10,8 @@ import sys
 
 
 # np.save('seeds.npy', seeds)
-def run_sensr(i):
-    seed_data = seeds[i, 0]
-    seed_model = seeds[i, 1]
+def run_sensr(seed_data, seed_model):
+    
 
     #seed_data = int(float(sys.argv[1]))
     #seed_model = int(float(sys.argv[2]))
@@ -64,6 +63,8 @@ def run_sensr(i):
 
 if __name__ == "__main__":
     np.random.seed(1)
-    seeds = np.random.randint(100000, size = (10, 2))
+    seeds = np.load('../seeds.npy')
     i = int(sys.argv[1])
-    run_sensr(i)
+    seed_data = seeds[i, 0]
+    seed_model = seeds[i, 1]
+    run_sensr(seed_data, seed_model)
