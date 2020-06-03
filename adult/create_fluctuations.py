@@ -38,10 +38,10 @@ if __name__ == '__main__':
     starts = np.arange(0, 9001, 200)
     ends = np.arange(200, 9201, 200)
     ends[-1] = 9045
-    expts = ['baseline'] 
+    expts = ['sensr', 'reduction', 'baseline', 'baseline_bal'] 
     data_index = range(ends.shape[0])
     iteration = range(10)
-    lrs = [1e-2, 3e-3, 4e-4, 1e-4]
+    lrs = [2e-3, 5e-3]
 
     a = itertools.product(expts, data_index, iteration, lrs)
     b = [i for i in a]

@@ -29,9 +29,9 @@ def part_summary(args):
 
 if __name__ == '__main__':
     
-    expts = ['baseline'] 
+    expts = ['baseline', 'baseline_bal', 'sensr', 'reduction'] 
     iteration = range(10)
-    lrs = lrs = [1e-2, 3e-3, 4e-4, 1e-4]
+    lrs = [2e-3, 5e-3]
 
     a = itertools.product(expts, iteration, lrs)
     b = [i for i in a]
