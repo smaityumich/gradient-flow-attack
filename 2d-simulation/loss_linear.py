@@ -183,8 +183,8 @@ def mean_ratio(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num
     # return np.mean(ratios)
 
 
-theta1 = np.arange(0, 4.1, step = 0.2)
-theta2 = np.arange(0, 4.1, step = 0.2)
+theta1 = np.arange(-4, 4.1, step = 0.4)
+theta2 = np.arange(-4, 4.1, step = 0.4)
 #theta1 = np.array([0, 1, 3])
 #theta2 = np.array([0, 1, 3])
 thetas = itertools.product(theta1, theta2)
