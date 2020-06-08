@@ -1,0 +1,142 @@
+SLURM_JOBID:  6797521
+SLURM_ARRAY_TASK_ID:  6
+SLURM_ARRAY_JOB_ID:  6797514
+WARNING:tensorflow:From /home/smaity/.local/lib/python3.6/site-packages/tensorflow/python/compat/v2_compat.py:96: disable_resource_variables (from tensorflow.python.ops.variable_scope) is deprecated and will be removed in a future version.
+Instructions for updating:
+non-resource variables are not supported in the long term
+2020-06-01 12:45:37.089725: W tensorflow/stream_executor/platform/default/dso_loader.cc:55] Could not load dynamic library 'libcuda.so.1'; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /sw/arcts/centos7/python3.6-anaconda/5.2.0/lib:/opt/slurm/lib64::
+2020-06-01 12:45:37.089764: E tensorflow/stream_executor/cuda/cuda_driver.cc:313] failed call to cuInit: UNKNOWN ERROR (303)
+2020-06-01 12:45:37.089790: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear to be running on this host (gl3044.arc-ts.umich.edu): /proc/driver/nvidia/version does not exist
+2020-06-01 12:45:37.090597: I tensorflow/core/platform/cpu_feature_guard.cc:143] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+2020-06-01 12:45:37.106343: I tensorflow/core/platform/profile_utils/cpu_utils.cc:102] CPU Frequency: 3000000000 Hz
+2020-06-01 12:45:37.106473: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x558186dcb620 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-06-01 12:45:37.106484: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+Real and fair distances (max/min/mean):
+0.0 0.0 0.0
+0.0 0.0 0.0
+Counter success count is -1
+Epoch 0 train accuracy 0.751030; loss 0.611438; lambda is 2.000000
+Epoch 0 test accuracy 0.755445
+Epoch 0 spouse consistency 1
+Train AUC is 0.419795; balanced AUC is 0.419795
+Train accuracy 0.751; balanced accuracy 0.500; FDR 1.000; TPR 0.000
+
+Train Gender accuracy 0.686; balanced accuracy 0.500; FDR 1.000; TPR 0.000
+
+Train Gender gap RMS 0.00010219217074398233
+Train Race accuracy 0.736; balanced accuracy 0.500; FDR 1.000; TPR 0.000
+
+Train Race gap RMS 0.00014556630551064954
+Train STD accuracy 0.025; balanced accuracy 0.000; FDR 0.000; TPR 0.000
+
+--------------------------------------------------
+Test AUC is 0.423404; balanced AUC is 0.423404
+Test accuracy 0.755; balanced accuracy 0.500; FDR 1.000; TPR 0.000
+
+Test Gender accuracy 0.693; balanced accuracy 0.500; FDR nan; TPR 0.000
+
+Test Gender gap RMS 0.0008180950033010453
+Test Race accuracy 0.741; balanced accuracy 0.500; FDR 1.000; TPR 0.000
+
+Test Race gap RMS 0.0003661868364508174
+Test STD accuracy 0.024; balanced accuracy 0.000; FDR nan; TPR 0.000
+
+--------------------------------------------------
+Real and fair distances (max/min/mean):
+1141387.3911574595 37.69230258398649 166297.08159504377
+0.0009483121 2.3943095e-10 0.0006865088
+Counter success count is -1
+Epoch 1000 train accuracy 0.729856; loss 0.633955; lambda is 0.710144
+Epoch 1000 test accuracy 0.735102
+FAILED attacks: subspace 0; full 0; Nans after attack 0
+Loss clean 0.853476; subspace 12.357731; adv 12.371315
+Epoch 1000 spouse consistency 0.987949
+Train AUC is 0.366308; balanced AUC is 0.366308
+Train accuracy 0.730; balanced accuracy 0.487; FDR 0.956; TPR 0.004
+
+Train Gender accuracy 0.667; balanced accuracy 0.487; FDR 0.942; TPR 0.004
+
+Train Gender gap RMS 0.0005645652938857847
+Train Race accuracy 0.715; balanced accuracy 0.487; FDR 0.957; TPR 0.004
+
+Train Race gap RMS 0.002796947073312835
+Train STD accuracy 0.024; balanced accuracy 0.000; FDR 0.007; TPR 0.000
+
+--------------------------------------------------
+Test AUC is 0.368079; balanced AUC is 0.368079
+Test accuracy 0.735; balanced accuracy 0.488; FDR 0.961; TPR 0.004
+
+Test Gender accuracy 0.672; balanced accuracy 0.485; FDR 0.971; TPR 0.002
+
+Test Gender gap RMS 0.009378555158879488
+Test Race accuracy 0.721; balanced accuracy 0.487; FDR 0.965; TPR 0.003
+
+Test Race gap RMS 0.005226812448963484
+Test STD accuracy 0.025; balanced accuracy 0.001; FDR 0.003; TPR 0.000
+
+--------------------------------------------------
+/home/smaity/gradient-flow-attack/adult/sensr/train_clp_adult.py:46: RuntimeWarning: Mean of empty slice.
+  fdr = (y_true[idx_pred_1]==0).mean()
+/home/smaity/.local/lib/python3.6/site-packages/numpy/core/_methods.py:161: RuntimeWarning: invalid value encountered in double_scalars
+  ret = ret.dtype.type(ret / rcount)
+ERROR:tensorflow:EventFileWriter writer thread error: tensorboard_adult/sensr_fair-dim:2_adv-epoch:10_batch_size:1000_adv-step:10.0_l2_attack:0.0001_adv_epoch_full:50_ro:0.001_balanced:True_lr:1e-05_clp:0.0_start:0.0_c_init:False_arch:100_7/events.out.tfevents.1591029937.gl3044.arc-ts.umich.edu; Stale file handle
+	Failed to flush 1 events to ./tensorboard_adult/sensr_fair-dim:2_adv-epoch:10_batch_size:1000_adv-step:10.0_l2_attack:0.0001_adv_epoch_full:50_ro:0.001_balanced:True_lr:1e-05_clp:0.0_start:0.0_c_init:False_arch:100_7/events.out.tfevents.1591029937.gl3044.arc-ts.umich.edu
+Exception in thread EventLoggerThread:
+Traceback (most recent call last):
+  File "/sw/arcts/centos7/python3.6-anaconda/5.2.0/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/home/smaity/.local/lib/python3.6/site-packages/tensorflow/python/summary/writer/event_file_writer.py", line 220, in run
+    self._ev_writer.Flush()
+RuntimeError: tensorboard_adult/sensr_fair-dim:2_adv-epoch:10_batch_size:1000_adv-step:10.0_l2_attack:0.0001_adv_epoch_full:50_ro:0.001_balanced:True_lr:1e-05_clp:0.0_start:0.0_c_init:False_arch:100_7/events.out.tfevents.1591029937.gl3044.arc-ts.umich.edu; Stale file handle
+	Failed to flush 1 events to ./tensorboard_adult/sensr_fair-dim:2_adv-epoch:10_batch_size:1000_adv-step:10.0_l2_attack:0.0001_adv_epoch_full:50_ro:0.001_balanced:True_lr:1e-05_clp:0.0_start:0.0_c_init:False_arch:100_7/events.out.tfevents.1591029937.gl3044.arc-ts.umich.edu
+
+Real and fair distances (max/min/mean):
+776743.0487820833 17350.667426879387 209579.8500314287
+0.00095269334 0.00076388096 0.0008992912
+Counter success count is -1
+Epoch 2000 train accuracy 0.717334; loss 0.632387; lambda is 0.573042
+Epoch 2000 test accuracy 0.722278
+FAILED attacks: subspace 0; full 0; Nans after attack 0
+Loss clean 0.812078; subspace 1.301875; adv 1.317739
+Epoch 2000 spouse consistency 0.984964
+Train AUC is 0.384406; balanced AUC is 0.384406
+Train accuracy 0.717; balanced accuracy 0.481; FDR 0.937; TPR 0.010
+
+Train Gender accuracy 0.656; balanced accuracy 0.481; FDR 0.919; TPR 0.009
+
+Train Gender gap RMS 0.0025423764142626436
+Train Race accuracy 0.703; balanced accuracy 0.480; FDR 0.937; TPR 0.009
+
+Train Race gap RMS 0.004904974587995177
+Train STD accuracy 0.024; balanced accuracy 0.000; FDR 0.009; TPR 0.000
+
+--------------------------------------------------
+Test AUC is 0.386122; balanced AUC is 0.386122
+Test accuracy 0.722; balanced accuracy 0.482; FDR 0.932; TPR 0.011
+
+Test Gender accuracy 0.659; balanced accuracy 0.477; FDR 0.948; TPR 0.006
+
+Test Gender gap RMS 0.022555765266053556
+Test Race accuracy 0.708; balanced accuracy 0.480; FDR 0.938; TPR 0.009
+
+Test Race gap RMS 0.013654106272641929
+Test STD accuracy 0.024; balanced accuracy 0.001; FDR 0.005; TPR 0.002
+
+--------------------------------------------------
+Traceback (most recent call last):
+  File "run_sensr_adult.py", line 69, in <module>
+    run_sensr(i)
+  File "run_sensr_adult.py", line 53, in run_sensr
+    fair_start=0., counter_init=False, seed=None)
+  File "/home/smaity/gradient-flow-attack/adult/sensr/train_clp_adult.py", line 744, in train_fair_nn
+    summary_writer.flush()
+  File "/home/smaity/.local/lib/python3.6/site-packages/tensorflow/python/summary/writer/writer.py", line 414, in flush
+    self.event_writer.flush()
+  File "/home/smaity/.local/lib/python3.6/site-packages/tensorflow/python/summary/writer/event_file_writer.py", line 153, in flush
+    six.reraise(*self._worker.failure_exc_info)  # pylint: disable=no-value-for-parameter
+  File "/home/smaity/.local/lib/python3.6/site-packages/six.py", line 702, in reraise
+    raise value.with_traceback(tb)
+  File "/home/smaity/.local/lib/python3.6/site-packages/tensorflow/python/summary/writer/event_file_writer.py", line 220, in run
+    self._ev_writer.Flush()
+RuntimeError: tensorboard_adult/sensr_fair-dim:2_adv-epoch:10_batch_size:1000_adv-step:10.0_l2_attack:0.0001_adv_epoch_full:50_ro:0.001_balanced:True_lr:1e-05_clp:0.0_start:0.0_c_init:False_arch:100_7/events.out.tfevents.1591029937.gl3044.arc-ts.umich.edu; Stale file handle
+	Failed to flush 1 events to ./tensorboard_adult/sensr_fair-dim:2_adv-epoch:10_batch_size:1000_adv-step:10.0_l2_attack:0.0001_adv_epoch_full:50_ro:0.001_balanced:True_lr:1e-05_clp:0.0_start:0.0_c_init:False_arch:100_7/events.out.tfevents.1591029937.gl3044.arc-ts.umich.edu

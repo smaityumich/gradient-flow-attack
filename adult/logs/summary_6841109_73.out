@@ -1,0 +1,35 @@
+SLURM_JOBID:  6841203
+SLURM_ARRAY_TASK_ID:  73
+SLURM_ARRAY_JOB_ID:  6841109
+2020-06-01 17:48:09.853203: W tensorflow/stream_executor/platform/default/dso_loader.cc:55] Could not load dynamic library 'libcuda.so.1'; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /sw/arcts/centos7/python3.6-anaconda/5.2.0/lib:/opt/slurm/lib64::
+2020-06-01 17:48:09.853370: E tensorflow/stream_executor/cuda/cuda_driver.cc:313] failed call to cuInit: UNKNOWN ERROR (303)
+2020-06-01 17:48:09.853391: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear to be running on this host (gl3040.arc-ts.umich.edu): /proc/driver/nvidia/version does not exist
+2020-06-01 17:48:09.853724: I tensorflow/core/platform/cpu_feature_guard.cc:143] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+2020-06-01 17:48:09.860763: I tensorflow/core/platform/profile_utils/cpu_utils.cc:102] CPU Frequency: 3000000000 Hz
+2020-06-01 17:48:09.860853: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x55668ea12db0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-06-01 17:48:09.860863: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+
+
+Measures for gender
+
+Accuracy is 0.822886
+Balanced accuracy is 0.804998
+Gap RMS is 0.040641836823926955
+Mean absolute gap is 0.03968663089972729
+Max gap is 0.04844621012772199
+Average odds difference is -0.008760
+Equal opportunity difference is 0.030927
+Statistical parity difference is -0.153651
+
+
+
+Measures for race
+
+Accuracy is 0.822886
+Balanced accuracy is 0.804998
+Gap RMS is 0.02146515068948865
+Mean absolute gap is 0.01858938189650433
+Max gap is 0.02932192934938671
+Average odds difference is -0.010733
+Equal opportunity difference is 0.007857
+Statistical parity difference is -0.085219

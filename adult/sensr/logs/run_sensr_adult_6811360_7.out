@@ -1,0 +1,45 @@
+SLURM_JOBID:  6811360
+SLURM_ARRAY_TASK_ID:  7
+SLURM_ARRAY_JOB_ID:  6811360
+WARNING:tensorflow:From /home/smaity/.local/lib/python3.6/site-packages/tensorflow/python/compat/v2_compat.py:96: disable_resource_variables (from tensorflow.python.ops.variable_scope) is deprecated and will be removed in a future version.
+Instructions for updating:
+non-resource variables are not supported in the long term
+2020-06-01 15:05:30.976989: W tensorflow/stream_executor/platform/default/dso_loader.cc:55] Could not load dynamic library 'libcuda.so.1'; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /sw/arcts/centos7/python3.6-anaconda/5.2.0/lib:/opt/slurm/lib64::
+2020-06-01 15:05:30.977025: E tensorflow/stream_executor/cuda/cuda_driver.cc:313] failed call to cuInit: UNKNOWN ERROR (303)
+2020-06-01 15:05:30.977053: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear to be running on this host (gl3016.arc-ts.umich.edu): /proc/driver/nvidia/version does not exist
+2020-06-01 15:05:30.977356: I tensorflow/core/platform/cpu_feature_guard.cc:143] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+2020-06-01 15:05:30.983161: I tensorflow/core/platform/profile_utils/cpu_utils.cc:102] CPU Frequency: 3000000000 Hz
+2020-06-01 15:05:30.983273: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x559afcdcddd0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-06-01 15:05:30.983283: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+Real and fair distances (max/min/mean):
+0.0 0.0 0.0
+0.0 0.0 0.0
+Counter success count is -1
+Epoch 0 train accuracy 0.256102; loss 0.958666; lambda is 2.000000
+Epoch 0 test accuracy 0.256827
+Epoch 0 spouse consistency 0.822001
+Train AUC is 0.296974; balanced AUC is 0.296974
+Train accuracy 0.256; balanced accuracy 0.417; FDR 0.789; TPR 0.734
+
+Train Gender accuracy 0.319; balanced accuracy 0.421; FDR 0.731; TPR 0.691
+
+Train Gender gap RMS 0.2247801037632809
+Train Race accuracy 0.270; balanced accuracy 0.418; FDR 0.776; TPR 0.728
+
+Train Race gap RMS 0.06607007141899736
+Train STD accuracy 0.024; balanced accuracy 0.001; FDR 0.023; TPR 0.018
+
+--------------------------------------------------
+Test AUC is 0.295546; balanced AUC is 0.295546
+Test accuracy 0.257; balanced accuracy 0.418; FDR 0.785; TPR 0.741
+
+Test Gender accuracy 0.320; balanced accuracy 0.422; FDR 0.725; TPR 0.699
+
+Test Gender gap RMS 0.2208955596668037
+Test Race accuracy 0.271; balanced accuracy 0.418; FDR 0.771; TPR 0.734
+
+Test Race gap RMS 0.06891891040125063
+Test STD accuracy 0.025; balanced accuracy 0.002; FDR 0.023; TPR 0.017
+
+--------------------------------------------------
+slurmstepd: error: *** JOB 6811360 ON gl3016 CANCELLED AT 2020-06-01T15:05:33 ***

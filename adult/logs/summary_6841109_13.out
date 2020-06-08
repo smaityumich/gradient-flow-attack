@@ -1,0 +1,36 @@
+SLURM_JOBID:  6841143
+SLURM_ARRAY_TASK_ID:  13
+SLURM_ARRAY_JOB_ID:  6841109
+2020-06-01 17:48:08.053726: W tensorflow/stream_executor/platform/default/dso_loader.cc:55] Could not load dynamic library 'libcuda.so.1'; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /sw/arcts/centos7/python3.6-anaconda/5.2.0/lib:/opt/slurm/lib64::
+2020-06-01 17:48:08.054196: E tensorflow/stream_executor/cuda/cuda_driver.cc:313] failed call to cuInit: UNKNOWN ERROR (303)
+2020-06-01 17:48:08.054229: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear to be running on this host (gl3226.arc-ts.umich.edu): /proc/driver/nvidia/version does not exist
+2020-06-01 17:48:08.054616: I tensorflow/core/platform/cpu_feature_guard.cc:143] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+2020-06-01 17:48:08.061839: I tensorflow/core/platform/profile_utils/cpu_utils.cc:102] CPU Frequency: 3000000000 Hz
+2020-06-01 17:48:08.061953: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x55ec749d6fb0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-06-01 17:48:08.061963: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+WARNING:tensorflow:No training configuration found in save file, so the model was *not* compiled. Compile it manually.
+
+
+Measures for gender
+
+Accuracy is 0.807407
+Balanced accuracy is 0.825093
+Gap RMS is 0.1682477916044373
+Mean absolute gap is 0.1660124587034763
+Max gap is 0.1933471058568006
+Average odds difference is -0.166012
+Equal opportunity difference is -0.138678
+Statistical parity difference is -0.303373
+
+
+
+Measures for race
+
+Accuracy is 0.807407
+Balanced accuracy is 0.825093
+Gap RMS is 0.0557119689459771
+Mean absolute gap is 0.041906908980350085
+Max gap is 0.07861705013439865
+Average odds difference is -0.041907
+Equal opportunity difference is -0.005197
+Statistical parity difference is -0.132304
