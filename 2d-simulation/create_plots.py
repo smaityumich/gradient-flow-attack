@@ -53,8 +53,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
 div_norm = colors.DivergingNorm(vmin=0.9, vcenter=1.25, vmax=3)
-theta1 = np.arange(0, 4.1, step = 0.2)
-theta2 = np.arange(0, 4.1, step= 0.2)
+theta1 = np.arange(-4, 4.1, step = 0.4)
+theta2 = np.arange(-4, 4.1, step= 0.4)
 T2, T1 = np.meshgrid(theta2, theta1)
 
 fig, ax = plt.subplots(nrows = 1, ncols = 3, figsize = [15, 5])
@@ -78,4 +78,4 @@ im2 = ax[2].pcolormesh(T1, T2, b, shading='gouraud', norm = div_norm, cmap = 'se
 ax[2].set_xlabel('$\\theta_1$', fontsize = 'x-large')
 ax[2].set_ylabel('$\\theta_2$', fontsize = 'x-large')
 fig.colorbar(im2, ax = ax, orientation='horizontal', fraction = 0.1)
-plt.savefig('plots/mean_ratios.pdf')
+plt.savefig('plots/mean_ratios.pdf', bbox_inches='tight')

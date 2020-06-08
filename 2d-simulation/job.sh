@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=test-std-node
 #SBATCH --nodes=1
+#SBATCH --array=0-2
 #SBATCH --cpus-per-task=20
 #SBATCH --mem-per-cpu=1gb
 #SBATCH --time=02:00:00
@@ -8,4 +9,4 @@
 #SBATCH --mail-type=NONE
 #SBATCH --mail-user=smaity@umich.edu
 #SBATCH --partition=standard
-python3 loss_ratio.py 5
+python3 loss_ratio.py $SLURM_ARRAY_TASK_ID

@@ -182,40 +182,41 @@ def mean_ratio(theta, fair_direction, regularizer = 1, learning_rate = 5e-2, num
     # ratios = ratios[np.isfinite(ratios)]
     # return np.mean(ratios)
 
+if __name__ == "__main__":
 
-theta1 = np.arange(-4, 4.1, step = 0.4)
-theta2 = np.arange(-4, 4.1, step = 0.4)
+    theta1 = np.arange(-4, 4.1, step = 0.4)
+    theta2 = np.arange(-4, 4.1, step = 0.4)
 #theta1 = np.array([0, 1, 3])
 #theta2 = np.array([0, 1, 3])
-thetas = itertools.product(theta1, theta2)
-theta = [list(i) for i in thetas]
+    thetas = itertools.product(theta1, theta2)
+    theta = [list(i) for i in thetas]
 
-ang = int(float(sys.argv[1]))
-angle = np.radians(ang)
-c, s = np.cos(angle), np.sin(angle)
-R = np.array(((c, -s), (s, c)))
-fair_direction = np.array([[0], [1]])
-fair_direction = R @ fair_direction
-while np.linalg.norm(fair_direction) != 1:
-    fair_direction = fair_direction/np.linalg.norm(fair_direction)
-fair_direction = fair_direction.reshape((-1,))
-orth_fair = np.array([fair_direction[1], -fair_direction[0]])
+    ang = int(float(sys.argv[1]))
+    angle = np.radians(ang*10)
+    c, s = np.cos(angle), np.sin(angle)
+    R = np.array(((c, -s), (s, c)))
+    fair_direction = np.array([[0], [1]])
+    fair_direction = R @ fair_direction
+    while np.linalg.norm(fair_direction) != 1:
+        fair_direction = fair_direction/np.linalg.norm(fair_direction)
+    fair_direction = fair_direction.reshape((-1,))
+    orth_fair = np.array([fair_direction[1], -fair_direction[0]])
 
-mean_ratio_theta = []
+    mean_ratio_theta = []
 #mean_ratio_theta_l2_base = []
-for t1 in theta1:
-    mean_ratio_theta_row = []
+    for t1 in theta1:
+        mean_ratio_theta_row = []
     #mean_ratio_theta_l2_base_row = []
-    for t2 in theta2:
-        r = mean_ratio([t1, t2], fair_direction, regularizer= 100, learning_rate=2e-2, num_steps=400)
-        mean_ratio_theta_row.append(r)
+        for t2 in theta2:
+            r = mean_ratio([t1, t2], fair_direction, regularizer= 100, learning_rate=2e-2, num_steps=400)
+            mean_ratio_theta_row.append(r)
         #r = mean_ratio_l2_base([t1, t2], fair_direction, regularizer= 2, learning_rate=2e-2, num_steps=100)
         #mean_ratio_theta_l2_base_row.append(r)
-    mean_ratio_theta.append(mean_ratio_theta_row)
+        mean_ratio_theta.append(mean_ratio_theta_row)
     #mean_ratio_theta_l2_base.append(mean_ratio_theta_l2_base_row)
 
 
 
 
-np.save(f'data/test_stat_{ang}.npy', np.array(mean_ratio_theta))
+    np.save(f'data/test_stat_{ang}.npy', np.array(mean_ratio_theta))
 #np.save(f'data/mean_ratio_l2_{ang}.npy', np.array(mean_ratio_theta_l2_base))
