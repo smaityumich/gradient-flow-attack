@@ -1,0 +1,36 @@
+SLURM_JOBID:  6841131
+SLURM_ARRAY_TASK_ID:  1
+SLURM_ARRAY_JOB_ID:  6841109
+2020-06-01 17:48:07.740899: W tensorflow/stream_executor/platform/default/dso_loader.cc:55] Could not load dynamic library 'libcuda.so.1'; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /sw/arcts/centos7/python3.6-anaconda/5.2.0/lib:/opt/slurm/lib64::
+2020-06-01 17:48:07.741328: E tensorflow/stream_executor/cuda/cuda_driver.cc:313] failed call to cuInit: UNKNOWN ERROR (303)
+2020-06-01 17:48:07.741360: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear to be running on this host (gl3128.arc-ts.umich.edu): /proc/driver/nvidia/version does not exist
+2020-06-01 17:48:07.741736: I tensorflow/core/platform/cpu_feature_guard.cc:143] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+2020-06-01 17:48:07.748835: I tensorflow/core/platform/profile_utils/cpu_utils.cc:102] CPU Frequency: 3000000000 Hz
+2020-06-01 17:48:07.748947: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x556382a4a3a0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-06-01 17:48:07.748957: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+WARNING:tensorflow:No training configuration found in save file, so the model was *not* compiled. Compile it manually.
+
+
+Measures for gender
+
+Accuracy is 0.811388
+Balanced accuracy is 0.828161
+Gap RMS is 0.14821890059178994
+Mean absolute gap is 0.14174272693583542
+Max gap is 0.18507679959733475
+Average odds difference is -0.141743
+Equal opportunity difference is -0.098409
+Statistical parity difference is -0.293531
+
+
+
+Measures for race
+
+Accuracy is 0.811388
+Balanced accuracy is 0.828161
+Gap RMS is 0.04802562343095957
+Mean absolute gap is 0.04406066120662569
+Max gap is 0.06316873907875303
+Average odds difference is -0.044061
+Equal opportunity difference is -0.024953
+Statistical parity difference is -0.113979

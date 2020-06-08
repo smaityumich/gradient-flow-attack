@@ -1,0 +1,39 @@
+SLURM_JOBID:  6841158
+SLURM_ARRAY_TASK_ID:  28
+SLURM_ARRAY_JOB_ID:  6841109
+2020-06-01 17:48:08.577149: W tensorflow/stream_executor/platform/default/dso_loader.cc:55] Could not load dynamic library 'libcuda.so.1'; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: /sw/arcts/centos7/python3.6-anaconda/5.2.0/lib:/opt/slurm/lib64::
+2020-06-01 17:48:08.577307: E tensorflow/stream_executor/cuda/cuda_driver.cc:313] failed call to cuInit: UNKNOWN ERROR (303)
+2020-06-01 17:48:08.577330: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear to be running on this host (gl3023.arc-ts.umich.edu): /proc/driver/nvidia/version does not exist
+2020-06-01 17:48:08.577723: I tensorflow/core/platform/cpu_feature_guard.cc:143] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
+2020-06-01 17:48:08.586174: I tensorflow/core/platform/profile_utils/cpu_utils.cc:102] CPU Frequency: 3000000000 Hz
+2020-06-01 17:48:08.586280: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x55972f5bdba0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2020-06-01 17:48:08.586291: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+WARNING:tensorflow:Inconsistent references when loading the checkpoint into this object graph. Either the Trackable object references in the Python program have changed in an incompatible way, or the checkpoint was generated in an incompatible program.
+
+Two checkpoint references resolved to different objects (<tensorflow.python.keras.layers.core.Dense object at 0x2b03ac5b8860> and <tensorflow.python.keras.layers.core.Dense object at 0x2b03ac5b8f98>).
+WARNING:tensorflow:No training configuration found in save file, so the model was *not* compiled. Compile it manually.
+
+
+Measures for gender
+
+Accuracy is 0.804422
+Balanced accuracy is 0.822194
+Gap RMS is 0.17508097874161402
+Mean absolute gap is 0.16937138324978832
+Max gap is 0.21371869041916253
+Average odds difference is -0.169371
+Equal opportunity difference is -0.125024
+Statistical parity difference is -0.312959
+
+
+
+Measures for race
+
+Accuracy is 0.804422
+Balanced accuracy is 0.822194
+Gap RMS is 0.07453452674829532
+Mean absolute gap is 0.07050340748177766
+Max gap is 0.0946832588264565
+Average odds difference is -0.070503
+Equal opportunity difference is -0.046324
+Statistical parity difference is -0.154415

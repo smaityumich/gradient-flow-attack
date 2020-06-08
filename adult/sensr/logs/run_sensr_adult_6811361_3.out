@@ -1,0 +1,16 @@
+SLURM_JOBID:  6811365
+SLURM_ARRAY_TASK_ID:  3
+SLURM_ARRAY_JOB_ID:  6811361
+WARNING:tensorflow:From /home/smaity/.local/lib/python3.6/site-packages/tensorflow/python/compat/v2_compat.py:96: disable_resource_variables (from tensorflow.python.ops.variable_scope) is deprecated and will be removed in a future version.
+Instructions for updating:
+non-resource variables are not supported in the long term
+Traceback (most recent call last):
+  File "run_sensr_adult.py", line 70, in <module>
+    run_sensr(seed_data, seed_model)
+  File "run_sensr_adult.py", line 52, in run_sensr
+    fair_start=0., counter_init=False, seed=None)
+  File "/home/smaity/gradient-flow-attack/adult/sensr/train_clp_adult.py", line 551, in train_fair_nn
+    os.makedirs(tb_dir)
+  File "/sw/arcts/centos7/python3.6-anaconda/5.2.0/lib/python3.6/os.py", line 220, in makedirs
+    mkdir(name, mode)
+FileExistsError: [Errno 17] File exists: './tensorboard_adult/sensr_fair-dim:2_adv-epoch:10_batch_size:1000_adv-step:10.0_l2_attack:0.0001_adv_epoch_full:50_ro:0.001_balanced:True_lr:1e-05_clp:0.0_start:0.0_c_init:False_arch:100_4'
